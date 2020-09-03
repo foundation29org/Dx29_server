@@ -1,0 +1,37 @@
+// All the keys with values from procces.env must be configured in Azure App service: Configuration/Aplication settings
+module.exports = {
+ client_server: process.env.CLIENT_SERVER, // If you are developing, add a second parameter with "||" and the url for localhost, in prod the first
+ port: process.env.PORT,
+ dbaccounts: process.env.MONGODBACCOUNTS, // If you are developing, add a second parameter with "||" and mongodb data, in prod the first
+ dbdata: process.env.MONGODBDATA, // If you are developing, add a second parameter with "||" and mongodb data, in prod the first
+ exomiser_topic: process.env.EXOMISERTOPIC, // If you are developing, add a second parameter with "||" and the topic for the notifications of exomiser, in prod the first
+ phenolyzer_topic: process.env.PHENOLYZERTOPIC, // If you are developing, add a second parameter with "||" and the topic for the notifications of phenolyzer, in prod the first
+ SECRET_TOKEN: undefined, // jwt secret token
+ TRANSPORTER_OPTIONS : { // configure the secret keys fot the transporter options, we use nodemailer as transporter
+   host: undefined,
+   port: undefined,
+   secureConnection: undefined,
+    tls: { ciphers: undefined },
+    auth: {
+        user: undefined,
+        pass: undefined
+    }
+ },
+ SECRET_KEY_CRYPTO: undefined, // secret key for crypto library
+ AZURE_SERVICEBUS_CONNECTION_STRING: undefined, // Azure service bus connection with the information of: endpoint, SharedAccessKeyName and SharedAccessKey.
+ blobAccessToken:{ // Blob access information: {sasToken:<token>,blobAccountUrl: 'https://<blob_name>.blob.core.windows.net/'}
+    sasToken: undefined,
+    blobAccountUrl: undefined,
+  },
+  
+  blobData:{ // Blob data information: {storageAccount:<account>,storageAccessKey: "<storage access key>"}
+    storageAccount:undefined,
+    storageAccessKey:undefined
+  },
+  f29bio: undefined, // f29Bio sevice URL
+  captcha: process.env.CAPTCHA, // If you are developing, add a second parameter with "||" and the captcha key, in prod the first
+  f29ncr: undefined, // f29Bio sevice URL
+  ncrBearer: process.env.NCRBEARER, // If you are developing, add a second parameter with "||" and the ncr bearer, in prod the first
+  translationKey: process.env.TRANSLATION_KEY, // If you are developing, add a second parameter with "||" and the translation service key, in prod the first
+  translationCategory: process.env.TRANSLATION_CATEGORY // If you are developing, add a second parameter with "||" and a translation category, in prod the first
+}

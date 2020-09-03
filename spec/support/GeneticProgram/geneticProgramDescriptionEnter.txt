@@ -1,0 +1,91 @@
+Describe enter values test cases.
+// NOTE: Date converter: https://timestamp.online/ + add 000
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+                              1. TRUE OUTPUTS:                                            
+////////////////////////////////////////////////////////////////////////////////////////////////
+                                          
+1.1. Has all symptoms, medical reports and age >5
+    Patient with 'HP:0001250'
+    Patient with medical reports
+    Patient with age <5
+1.2. Has all because of inmediate successor of 'HP:0001250', medical reports and age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0007359 
+    Patient with medical reports
+    Patient with age <5
+1.3. Has all because of NOT inmediate successor of 'HP:0001250', medical reports and age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0032786 
+    Patient with medical reports
+    Patient with age <5
+
+////////////////////////////////////////////////////////////////////////////////////////////////                                                 
+                                2. FALSE OUTPUTS 1 KO:                                                                                            
+////////////////////////////////////////////////////////////////////////////////////////////////
+------------------      2.1. FALSE BECAUSE NOT CORRECT AGE                  ------------------
+2.1.1. Has all symptoms and medical reports but age >5
+    Patient with 'HP:0001250' 
+    Patient with medical reports
+    Patient with age >5
+2.1.2. Has all symptoms because of inmediate successor of 'HP:0001250' and medical reports but age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0007359 
+    Patient with medical reports
+    Patient with age >5
+2.1.3. Has all symptoms because of NOT inmediate successor of 'HP:0001250' and medical reports but age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0032786 
+    Patient with medical reports
+    Patient with age >5
+
+
+------------------      2.2. FALSE BECAUSE NOT ALL SYMPTOMS                  ------------------
+2.2.1. Not symptom 'HP:0001250' and succesors
+    Patient without 'HP:0001250'and succesors, but with succesor of 'HP:0001263'
+    Patient with medical reports
+    Patient with age <5
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////                                                 
+                                3. FALSE OUTPUTS 2 KO:                                                                                            
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+------------------ 3.1. FALSE BECAUSE NOT ALL SYMPTOMS & NOT MEDICAL REPORTS ------------------
+3.1.1. Not symptom 'HP:0001250' and succesors && not medical reports
+    Patient without 'HP:0001250'and succesors, but with 'HP:0001263'
+    Patient without medical reports
+    Patient with age <5
+
+------------------   3.2. FALSE BECAUSE NOT ALL SYMPTOMS & NOT CORRECT AGE    ------------------
+3.2.1. Not symptom 'HP:0001250' and succesors && age>5
+    Patient without 'HP:0001250'and succesors, but with 'HP:0001263'
+    Patient with medical reports
+    Patient with age >5
+
+------------------  3.3. FALSE BECAUSE NOT MEDICAL REPORTS & NOT CORRECT AGE  ------------------
+3.3.1. Has all symptom but without medical reports and age >5
+    Patient with 'HP:0001250' 
+    Patient without medical reports
+    Patient with age >5
+3.3.2. Has all because of inmediate successor of 'HP:0001250' but without medical reports and age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0007359 
+    Patient without medical reports
+    Patient with age >5
+3.3.3. Has all because of NOT inmediate successor of 'HP:0001250' but without medical reports and age >5
+    Patient with inmediate successor of 'HP:0001250'= HP:0032786 
+    Patient without medical reports
+    Patient with age >5
+
+////////////////////////////////////////////////////////////////////////////////////////////////                                                 
+                                4. FALSE OUTPUTS 3 KO:                                                                                            
+////////////////////////////////////////////////////////////////////////////////////////////////
+4.1. Not symptom 'HP:0001250' and succesors && Not medical reports && age>5
+    Patient without 'HP:0001250'and succesors
+    Patient without medical reports
+    Patient with age >5
+
+////////////////////////////////////////////////////////////////////////////////////////////////                                                 
+                                5. FALSE: OTHER SPECIAL CASES                                                                                            
+////////////////////////////////////////////////////////////////////////////////////////////////
+5.1. If birthdate = null -> return result = null (reason:["Birthdate null"]) and total=FALSE
+5.2. If birthdate=undefined -> return null (reason:["Birthdate null"]) and total=FALSE
+5.3. If list patientSymptoms=[] -> return null (reason:["Patient has not symptoms"]) and total=FALSE
+5.4. If list patientSymptoms=undefined -> return null (reason:["Patient has not symptoms"]) and total=FALSE
+5.5. If list patientSymptoms=null -> return null (reason:["Patient has not symptoms"]) and total=FALSE
