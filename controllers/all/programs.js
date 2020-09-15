@@ -225,6 +225,7 @@ function geneticProgram(patientId, programId){
 				reject({message: `Error making the request: ${err}`})
 			}
 			if(!phenotype){
+				totalResult = {name:"Genetic Program 1",result:false,data:[], id: programId};
 				let result1={test:"Check symptoms",result:null,reason:["Patient has not symptoms"]}
 				let result2 = await checkPatientMedicalReports(patientId)
 				let result3 = await comparePatientAgeWithValue(patientId,5)
@@ -233,10 +234,11 @@ function geneticProgram(patientId, programId){
 				totalResult.data.push(result3)
 				resolve(totalResult)
 			}
-			phenotype.data.forEach(phenotype=>{
-				listPatientSymptoms.push(phenotype.id)
-
-			})
+			else{
+				phenotype.data.forEach(phenotype=>{
+					listPatientSymptoms.push(phenotype.id)
+				})
+			}
 			// Set listSymptoms to compare
 			let listSymptomsToCompare=[]
 			// Seizures and developmental delay
