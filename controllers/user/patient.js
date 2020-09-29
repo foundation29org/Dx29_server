@@ -247,6 +247,7 @@ function savePatient (req, res){
 	patient.siblings = req.body.siblings
 	patient.parents = req.body.parents
   patient.actualStep = req.body.actualStep
+  patient.stepClinic = req.body.stepClinic
 	patient.relationship = req.body.relationship
 	patient.createdBy = userId
 
@@ -455,6 +456,34 @@ function setActualStep (req, res){
 	})
 }
 
+function getStepClinic (req, res){
+	let patientId= crypt.decrypt(req.params.patientId);
+
+	Patient.findById(patientId, {"_id" : false , "createdBy" : false }, (err, patient) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+		if(!patient) return res.status(202).send({message: `The patient does not exist`})
+		var result = "0.0";
+		if(patient.stepClinic!=undefined){
+			result = patient.stepClinic
+		}
+		res.status(200).send(result)
+	})
+}
+
+function setStepClinic (req, res){
+	let patientId= crypt.decrypt(req.params.patientId);
+	var stepClinic = req.body.actualStep;
+	console.log(stepClinic);
+	Patient.findByIdAndUpdate(patientId, {stepClinic: stepClinic }, {new: true}, (err,patientUpdated) => {
+		if(patientUpdated){
+		return res.status(200).send({message: 'Updated'})
+		}else{
+		console.log(err);
+		return res.status(200).send({message: 'error'})
+		}
+	})
+}
+
 function getPendingJobs (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	var result=[];
@@ -516,9 +545,11 @@ module.exports = {
 	deletePatient,
 	changenotes,
 	changecasename,
-  	changesharedcasename,
+  changesharedcasename,
 	getActualStep,
 	setActualStep,
+  getStepClinic,
+  setStepClinic,
 	getPendingJobs,
 	setPendingJobs,
 	deletePendingJob
