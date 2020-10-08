@@ -11,7 +11,8 @@ const ProgramSchema = Schema({
 	data: {type: Object, default: []},
 	requests: {type: Object, default: []},
 	accepted: {type: Object, default: []},
-	rejected: {type: Object, default: []}
+	rejected: {type: Object, default: []},
+	externalRequests: {type: Object, default: []}
 }, { versionKey: false // You should be aware of the outcome after set to false
 })
 

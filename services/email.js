@@ -878,6 +878,53 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
   return decoded
 }
 
+function sendMail_request_genetic_program_external_patient (email, lang){
+  //caso 1.1.2
+  const decoded = new Promise((resolve, reject) => {
+    var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
+
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var subjectlang='Dx29 - GTP - Successful application to the 100 diagnoses program';
+
+    if(lang=='es'){
+      subjectlang='Dx29 - GTP - Solicitud al programa 100 diagnósticos realizada con éxito ';
+    }
+
+
+    var mailOptions = {
+      to: email,
+      from: TRANSPORTER_OPTIONS.auth.user,
+      bcc: maillistbcc,
+      subject: subjectlang,
+      template: 'request_genetic_program_external_patient/_'+lang,
+      context: {
+        client_server : client_server,
+        email: email,
+        urlImg: urlImg
+      }
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        console.log('Email sent: ' + info.response);
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
+
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -895,5 +942,6 @@ module.exports = {
   sendMailProgramRequestToPatient,
   sendMailProgramRequestToClinician,
   sendMail_request_genetic_program_patient,
-  sendMail_request_genetic_program_clinician
+  sendMail_request_genetic_program_clinician,
+  sendMail_request_genetic_program_external_patient
 }

@@ -636,7 +636,7 @@ function getPatientInfo(patientId,email,gender,birthDate){
 	return new Promise ((resolve,reject) =>{
 		Patient.findById(patientId,async (err,patientProgramFound)=>{
 			if(err) resolve(patientInfo)
-			if(!patientProgramFound){ 				
+			if(!patientProgramFound){
 				resolve({patientFound:false,patientInfo:patientInfo})
 			}
 			if(patientProgramFound) {
@@ -659,7 +659,7 @@ function getPatientInfo(patientId,email,gender,birthDate){
 				patientInfo.patientName=patientProgramFound.patientName;
 				// Phenotype: listSymptoms
 				await Phenotype.findOne({createdBy:patientId},(err,phenoFound)=>{
-					if(err) resolve(patientInfo)	
+					if(err) resolve(patientInfo)
 					if(phenoFound){
 						var listSymptoms=[];
 						for(var i=0;i<phenoFound.data.length;i++){
@@ -676,8 +676,8 @@ function getPatientInfo(patientId,email,gender,birthDate){
 				patientInfo.dataAnalysisStatus=await checkPatientAnalysedGeneticData(patientId)
 				resolve({patientFound:true,patientInfo:patientInfo})
 			}
-					
-		})		
+
+		})
 	});
 }
 
@@ -740,7 +740,7 @@ function getProgramsRequestsAndStatus(req,res){
 							var clinicianEmail=programList[i].rejected[j].clinicalEmail
 							var clinicianName=await getClinicianInfo(clinicianEmail)
 							var patientProgramId=crypt.decrypt(programList[i].rejected[j].patientId)
-							var patientInfo=await getPatientInfo(patientProgramId,programList[i].rejected[j].email,programList[i].rejected[j].gender,programList[i].rejected[j].birthDate);							
+							var patientInfo=await getPatientInfo(patientProgramId,programList[i].rejected[j].email,programList[i].rejected[j].gender,programList[i].rejected[j].birthDate);
 							var patientEmail=patientInfo.patientInfo.email;
 							var patientName=patientInfo.patientInfo.patientName;
 							var listSymptoms=patientInfo.patientInfo.listSymptoms;
@@ -761,7 +761,7 @@ function getProgramsRequestsAndStatus(req,res){
 							var clinicianEmail=programList[i].requests[j].clinicalEmail
 							var clinicianName=await getClinicianInfo(clinicianEmail)
 							var patientProgramId=crypt.decrypt(programList[i].requests[j].patientId)
-							var patientInfo=await getPatientInfo(patientProgramId,programList[i].requests[j].email,programList[i].requests[j].gender,programList[i].requests[j].birthDate);	
+							var patientInfo=await getPatientInfo(patientProgramId,programList[i].requests[j].email,programList[i].requests[j].gender,programList[i].requests[j].birthDate);
 							var patientEmail=patientInfo.patientInfo.email;
 							var patientName=patientInfo.patientInfo.patientName;
 							var listSymptoms=patientInfo.patientInfo.listSymptoms;
@@ -790,7 +790,7 @@ function getProgramsRequestsAndStatus(req,res){
 			}
 		}
 	})
-	
+
 
 
 }
@@ -855,7 +855,7 @@ function acceptProgram(req,res){
 										return res.status(200).send({ message: `Nothing to update: ${err}`})
 									}
 								}
-								
+
 							}
 
 						}
@@ -871,8 +871,9 @@ function acceptProgram(req,res){
 			}
 		}
 	});
-	
+
 }
+
 function rejectProgram(req,res){
 	let userId=crypt.decrypt(req.body.userId);
 	let programName=req.body.programName;
@@ -933,7 +934,7 @@ function rejectProgram(req,res){
 										return res.status(200).send({ message: `Nothing to update: ${err}`})
 									}
 								}
-								
+
 							}
 
 						}
@@ -1010,7 +1011,7 @@ function requestProgram(req,res){
 										return res.status(200).send({ message: `Nothing to update: ${err}`})
 									}
 								}
-								
+
 							}
 
 						}
@@ -1116,6 +1117,50 @@ function deleteEntryInPrograms(req,res){
 	});
 }
 
+function externalRequest (req,res){
+	console.log(req.body);
+
+	Programs.findOne({name:req.body.programName}, function(err, program) {
+		if(err){
+			return res.status(200).send({message: 'program error'})
+		}else{
+			if(program!=undefined){
+				var foundidPatient = false;
+				for (var i = 0; i < program.externalRequests.length && !foundidPatient; i++){
+					if(program.externalRequests[i].email == req.body.form.email){
+						foundidPatient = true;
+					}
+				}
+				if(!foundidPatient){
+					program.externalRequests.push(req.body.form);
+					Programs.findByIdAndUpdate(program._id, { externalRequests: program.externalRequests }, {new: true}, (err,requestsUpdated) => {
+						if(requestsUpdated){
+							//send email
+							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang)
+								.then(response => {
+									res.status(200).send({ message: 'Email sent'})
+								})
+								.catch(response => {
+									//create user, but Failed sending email.
+									//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
+									res.status(200).send({ message: 'Fail sending email'})
+								})
+
+						}else{
+							return res.status(200).send({message: 'error'})
+						}
+					})
+
+				}else{
+					return res.status(200).send({message: 'You are already registered in the program with that email.'})
+				}
+			}else{
+				return res.status(200).send({message: 'program not found'})
+			}
+		}
+	});
+}
+
 module.exports = {
 	checkPatientSymptoms,
 	checkPrograms,
@@ -1125,5 +1170,6 @@ module.exports = {
 	acceptProgram,
 	rejectProgram,
 	requestProgram,
-	deleteEntryInPrograms
+	deleteEntryInPrograms,
+	externalRequest
 }
