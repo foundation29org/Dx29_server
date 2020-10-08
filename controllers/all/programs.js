@@ -777,6 +777,23 @@ function getProgramsRequestsAndStatus(req,res){
 								patientName:patientName,birthdate:birthDate,listSymptoms:listSymptoms,genre:genre,date:date,
 								medicalRecords:medicalRecords,applicationStatus:applicationStatus,geneticDataStatus:geneticDataStatus,dataAnalysisStatus:dataAnalysisStatus}})
 						}
+
+						for(var j=0;j<programList[i].externalRequests.length;j++){
+							var birthDate=programList[i].externalRequests[j].birthDate
+							var gender=programList[i].externalRequests[j].gender
+							var ges=programList[i].externalRequests[j].GES
+							var developmentalDelay=programList[i].externalRequests[j].developmentalDelay
+							var consultationWithPediatric=programList[i].externalRequests[j].consultationWithPediatric
+							var userName=programList[i].externalRequests[j].userName
+							var lastName=programList[i].externalRequests[j].lastName
+							var phone=programList[i].externalRequests[j].phone
+							var email=programList[i].externalRequests[j].email
+							var date=programList[i].externalRequests[j].date
+							var applicationStatus="externalRequests";
+							result.push({patientFound:false,data:{birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,consultationWithPediatric:consultationWithPediatric,
+								userName:userName,lastName:lastName,phone:phone,email:email,date:date, applicationStatus:applicationStatus}})
+						}
+
 					}
 					return res.status(200).send(result)
 				}
@@ -1132,6 +1149,7 @@ function externalRequest (req,res){
 					}
 				}
 				if(!foundidPatient){
+					req.body.form.date = Date.now();
 					program.externalRequests.push(req.body.form);
 					Programs.findByIdAndUpdate(program._id, { externalRequests: program.externalRequests }, {new: true}, (err,requestsUpdated) => {
 						if(requestsUpdated){
