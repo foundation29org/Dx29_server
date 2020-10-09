@@ -783,14 +783,13 @@ function getProgramsRequestsAndStatus(req,res){
 							var gender=programList[i].externalRequests[j].gender
 							var ges=programList[i].externalRequests[j].GES
 							var developmentalDelay=programList[i].externalRequests[j].developmentalDelay
-							var consultationWithPediatric=programList[i].externalRequests[j].consultationWithPediatric
 							var userName=programList[i].externalRequests[j].userName
 							var lastName=programList[i].externalRequests[j].lastName
 							var phone=programList[i].externalRequests[j].phone
 							var email=programList[i].externalRequests[j].email
 							var date=programList[i].externalRequests[j].date
 							var applicationStatus="externalRequests";
-							result.push({patientFound:false,data:{birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,consultationWithPediatric:consultationWithPediatric,
+							result.push({patientFound:false,data:{birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
 								userName:userName,lastName:lastName,phone:phone,email:email,date:date, applicationStatus:applicationStatus}})
 						}
 
