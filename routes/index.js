@@ -92,6 +92,7 @@ api.post('/programs/setRejected/',auth,programsCtrl.rejectProgram)
 api.post('/programs/setRequested/',auth,programsCtrl.requestProgram)
 api.post('/programs/deleteApplication/',auth,programsCtrl.deleteEntryInPrograms)
 api.post('/programs/externalRequest/',programsCtrl.externalRequest)
+api.post('/programs/changeexternalRequest/',programsCtrl.changeExternalRequest)
 
 // phenotypeinfo routes, using the controller socialinfo, this controller has methods
 api.get('/phenotypes/:patientId', auth, phenotypeCtrl.getPhenotype)

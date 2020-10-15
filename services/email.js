@@ -878,7 +878,7 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
   return decoded
 }
 
-function sendMail_request_genetic_program_external_patient (email, lang){
+function sendMail_request_genetic_program_external_patient (email, lang, state, randomIdRequest){
   //caso 1.1.2
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
@@ -887,10 +887,10 @@ function sendMail_request_genetic_program_external_patient (email, lang){
       TRANSPORTER_OPTIONS.auth.user
     ];
 
-    var subjectlang='Dx29 - GTP - Successful application to the 100 diagnoses program';
+    var subjectlang='Dx29 - Request to the program Together towards the diagnosis'+' - '+randomIdRequest;
 
     if(lang=='es'){
-      subjectlang='Dx29 - GTP - Solicitud al programa 100 diagnósticos realizada con éxito ';
+      subjectlang='Dx29 - Solicitud al programa Juntos hacia el diagnóstico'+' - '+randomIdRequest;
     }
 
 
@@ -899,13 +899,30 @@ function sendMail_request_genetic_program_external_patient (email, lang){
       from: TRANSPORTER_OPTIONS.auth.user,
       bcc: maillistbcc,
       subject: subjectlang,
-      template: 'request_genetic_program_external_patient/_'+lang,
+      template: 'request_genetic_program_external_patient/accepted/_'+lang,
       context: {
         client_server : client_server,
         email: email,
-        urlImg: urlImg
+        urlImg: urlImg,
+        randomIdRequest: randomIdRequest
       }
     };
+
+    if(state=='Rejected'){
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'request_genetic_program_external_patient/rejected/_'+lang,
+        context: {
+          client_server : client_server,
+          email: email,
+          urlImg: urlImg,
+          randomIdRequest: randomIdRequest
+        }
+      };
+    }
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {

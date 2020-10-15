@@ -578,6 +578,11 @@ function alphanumeric_unique(program) {
 				isBusyIdReqest = true;
 			}
 		}
+		for(var i = 0; i < program.externalRequests.length && !isBusyIdReqest; i++) {
+			if(program.externalRequests[i].idRequest == randomIdRequest){
+				isBusyIdReqest = true;
+			}
+		}
 		if(isBusyIdReqest){
 			alphanumeric_unique(program);
 		}else{
@@ -779,6 +784,7 @@ function getProgramsRequestsAndStatus(req,res){
 						}
 
 						for(var j=0;j<programList[i].externalRequests.length;j++){
+							var applicationId=programList[i].externalRequests[j].idRequest
 							var birthDate=programList[i].externalRequests[j].birthDate
 							var gender=programList[i].externalRequests[j].gender
 							var ges=programList[i].externalRequests[j].GES
@@ -788,9 +794,10 @@ function getProgramsRequestsAndStatus(req,res){
 							var phone=programList[i].externalRequests[j].phone
 							var email=programList[i].externalRequests[j].email
 							var date=programList[i].externalRequests[j].date
+							var status=programList[i].externalRequests[j].status
 							var applicationStatus="externalRequests";
-							result.push({patientFound:false,data:{birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
-								userName:userName,lastName:lastName,phone:phone,email:email,date:date, applicationStatus:applicationStatus}})
+							result.push({patientFound:false,data:{date:date, applicationId:applicationId, birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
+								userName:userName,lastName:lastName,phone:phone,email:email, applicationStatus:applicationStatus, status: status}})
 						}
 
 					}
@@ -1149,11 +1156,23 @@ function externalRequest (req,res){
 				}
 				if(!foundidPatient){
 					req.body.form.date = Date.now();
+					var randomIdRequest = alphanumeric_unique(program);
+					req.body.form.idRequest = randomIdRequest;
 					program.externalRequests.push(req.body.form);
+					req.body.form.status = 'Requested';
 					Programs.findByIdAndUpdate(program._id, { externalRequests: program.externalRequests }, {new: true}, (err,requestsUpdated) => {
 						if(requestsUpdated){
+							var today= Date.now();
+							var partsBirth = req.body.form.birthDate.split('-');
+							const d = new Date(partsBirth[0], (partsBirth[1]-1), partsBirth[2], 0, 0, 0, 0);
+							var dateCreated = new Date(today-d.getTime())
+							var agePatient = dateCreated.getUTCFullYear() - 1970;
+							var state = 'Rejected';
+							if(req.body.form.developmentalDelay=='yes' && req.body.form.GES=='yes' && agePatient<=2){
+								state = 'Accepted';
+							}
 							//send email
-							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang)
+							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest)
 								.then(response => {
 									res.status(200).send({ message: 'Email sent'})
 								})
@@ -1178,15 +1197,75 @@ function externalRequest (req,res){
 	});
 }
 
+function changeExternalRequest (req,res){
+	let userId=crypt.decrypt(req.body.data.userId);
+	let programName=req.body.data.programName;
+	let idRequest=req.body.data.idRequest;
+	User.findById(userId,async (err, userFound) => {
+		if(err) return res.status(500).send({message: `Error searching the user: ${err}`})
+		if(!userFound) return res.status(500).send({ message: `user not exists: ${err}`})
+		if(userFound){
+			// GTP
+			if(programName=="Genetic Program 1"){
+				// Only for Admin&AdminGTP
+				if((userFound.role=='Admin')&&(userFound.subrole=='AdminGTP')){
+					// Busco en Programs el que me diga programName
+					Programs.find({name:programName},(err,programFound)=>{
+						if(err) return res.status(500).send({message: `Error searching the program: ${err}`})
+						if(!programFound) return res.status(500).send({ message: `the program not exists: ${err}`})
+						if(programFound){
+							// Busco en las listas por idRequest
+							for(var i=0;i<programFound.length;i++){
+								// Si estaba en la de requests no hago nada
+								// Si esta en otra: lo borro de esta y lo escribo en la de requests
+								var foundInAccepted=false;
+								var indexFound;
+								var dataToChangeStatus;
+								for(var j=0;j<programFound[i].externalRequests.length;j++){
+									if(programFound[i].externalRequests[j].idRequest==idRequest){
+										programFound[i].externalRequests[j].status = req.body.action;
+										foundInAccepted=true;
+										indexFound=j;
+										dataToChangeStatus=programFound[i].externalRequests[j];
+									}
+								}
+								if(foundInAccepted==true){
+									Programs.findByIdAndUpdate(programFound[i]._id,programFound[i],(err,programDataUpdated)=>{
+										if(err) return res.status(500).send({message: `Error updating the program: ${err}`})
+										return res.status(200).send({message: 'State updated to requested', idRequest: idRequest})
+									});
+								}
+								else{
+									return res.status(200).send({ message: `Nothing to update: ${err}`})
+								}
+
+							}
+
+						}
+					})
+				}
+				else{
+					return res.status(401).send({message: 'without permission'})
+				}
+			}
+			else{
+				// De momento no hay mas programas
+				return res.status(200).send({message: 'There are nothing to update', idRequest: idRequest});
+			}
+		}
+	});
+}
+
 module.exports = {
 	checkPatientSymptoms,
 	checkPrograms,
-  	newProgram,
+  newProgram,
 	programRequest,
 	getProgramsRequestsAndStatus,
 	acceptProgram,
 	rejectProgram,
 	requestProgram,
 	deleteEntryInPrograms,
-	externalRequest
+	externalRequest,
+	changeExternalRequest
 }
