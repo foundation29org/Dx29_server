@@ -47,9 +47,21 @@ function callPhen2Genes (listHPOs,depth){
   });
 }
 
+function getDiseasesOfGenes (listGenes){
+  return new Promise ((resolve,reject) =>{
+    request.post({url:config.f29bio+'/api/BioEntity/gene/disease',json: true,body:listGenes}, (error, res, body) => {
+      if (error) {
+        console.error(error)
+        resolve(null)
+      }
+      resolve(body)
+    });
+  });
+}
 
 module.exports = {
 	getSuccessors,
   getTranslationDictionary,
-  callPhen2Genes
+  callPhen2Genes,
+  getDiseasesOfGenes
 }

@@ -7,20 +7,15 @@ const Patient = require('./patient')
 
 const { conndbdata } = require('../db_connect')
 
-const Permissions = Schema({
-	shareWithCommunity: {type: Boolean, default: false}
-}, {_id: false})
-
 const AlgorithmsSchema = Schema({
-	idEjecucion: {type: String, default: null},
+	idExecution: {type: String, default: null},
 	name: {type: String, default: null},
-	inputType: {type: String, default: null},
+	result: {type: String, default: null},
 	date: {type: Date, default: Date.now},
-	data: Object,
-	discarded: {type: Object, default: []},
-	permissions: [Permissions],
+	status: {type: String, default: null},
+	params: {type: String, default: null},
 	createdBy: { type: Schema.Types.ObjectId, ref: "Patient"}
 })
 
-module.exports = conndbdata.model('Phenotype',AlgorithmsSchema)
+module.exports = conndbdata.model('Algorithms',AlgorithmsSchema)
 // we need to export the model so that it is accessible in the rest of the app

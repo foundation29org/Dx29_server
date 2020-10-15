@@ -21,6 +21,7 @@ const superadmninUsersClinicalCtrl = require('../controllers/superadmin/users-cl
 const hpoServiceCtrl = require('../services/hpo-info')
 const exomizerserviceCtrl = require('../services/exomizer')
 const phenolyzerserviceCtrl = require('../services/phenolyzer')
+const phene2GeneserviceCtrl = require('../services/phen2Gene')
 const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
@@ -140,6 +141,10 @@ api.get('/exomizerservices/cancel/:patientId', exomizerserviceCtrl.cancelProcess
 api.post('/exomizerservices/moveCorruptedVCF/:patientId', exomizerserviceCtrl.moveCorruptedVCFsBlobgenomics)
 api.get('/phenolyzerservice/:patientId', phenolyzerserviceCtrl.observerProcessPhenolyzer)
 api.get('/phenolyzerservices/:patientId', phenolyzerserviceCtrl.testProcessPhenolyzer)
+
+//phen2Gene
+api.post('/phen2Gene/:patientId', auth, phene2GeneserviceCtrl.launchPhen2Genes)
+api.get('/lastPhen2Gene/:patientId', auth, phene2GeneserviceCtrl.getLastPhen2GenesResults)
 
 //diagnóstico
 
