@@ -1160,19 +1160,24 @@ function externalRequest (req,res){
 					req.body.form.idRequest = randomIdRequest;
 					program.externalRequests.push(req.body.form);
 					req.body.form.status = 'Requested';
+					var today= Date.now();
+					var partsBirth = req.body.form.birthDate.split('-');
+					const d = new Date(partsBirth[0], (partsBirth[1]-1), partsBirth[2], 0, 0, 0, 0);
+					var dateCreated = new Date(today-d.getTime())
+					var agePatient = dateCreated.getUTCFullYear() - 1970;
+					var state = 'Rejected';
+					if(req.body.form.developmentalDelay=='yes' && req.body.form.GES=='yes' && agePatient<=2){
+						state = 'Accepted';
+					}
+					if(req.body.form.terms2!=true){
+						req.body.form.developmentalDelay=null;
+						req.body.form.GES=null;
+					}
 					Programs.findByIdAndUpdate(program._id, { externalRequests: program.externalRequests }, {new: true}, (err,requestsUpdated) => {
 						if(requestsUpdated){
-							var today= Date.now();
-							var partsBirth = req.body.form.birthDate.split('-');
-							const d = new Date(partsBirth[0], (partsBirth[1]-1), partsBirth[2], 0, 0, 0, 0);
-							var dateCreated = new Date(today-d.getTime())
-							var agePatient = dateCreated.getUTCFullYear() - 1970;
-							var state = 'Rejected';
-							if(req.body.form.developmentalDelay=='yes' && req.body.form.GES=='yes' && agePatient<=2){
-								state = 'Accepted';
-							}
+
 							//send email
-							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest)
+							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
 								.then(response => {
 									res.status(200).send({ message: 'Email sent'})
 								})

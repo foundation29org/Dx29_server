@@ -878,7 +878,7 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
   return decoded
 }
 
-function sendMail_request_genetic_program_external_patient (email, lang, state, randomIdRequest){
+function sendMail_request_genetic_program_external_patient (email, lang, state, randomIdRequest, userName){
   //caso 1.1.2
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
@@ -887,10 +887,10 @@ function sendMail_request_genetic_program_external_patient (email, lang, state, 
       TRANSPORTER_OPTIONS.auth.user
     ];
 
-    var subjectlang='Dx29 - Request to the program Together towards the diagnosis'+' - '+randomIdRequest;
+    var subjectlang='Together towards a diagnostic '+' [ID: '+randomIdRequest+']';
 
     if(lang=='es'){
-      subjectlang='Dx29 - Solicitud al programa Juntos hacia el diagnóstico'+' - '+randomIdRequest;
+      subjectlang='Juntos hacia el diagnóstico '+' [ID: '+randomIdRequest+']';
     }
 
 
@@ -904,7 +904,8 @@ function sendMail_request_genetic_program_external_patient (email, lang, state, 
         client_server : client_server,
         email: email,
         urlImg: urlImg,
-        randomIdRequest: randomIdRequest
+        randomIdRequest: randomIdRequest,
+        userName: userName
       }
     };
 
