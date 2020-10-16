@@ -8,6 +8,8 @@ const Patient = require('../../models/patient')
 const User = require('../../models/user')
 const Phenotype = require ('../../models/phenotype')
 const serviceEmail = require('../../services/email')
+const serviceEmailGtpEs = require('../../services/email_gtp_es')
+const serviceEmailGtpEn = require('../../services/email_gtp_en')
 const crypt = require('../../services/crypt')
 const async = require('async')
 const https = require('https');
@@ -1177,15 +1179,28 @@ function externalRequest (req,res){
 						if(requestsUpdated){
 
 							//send email
-							serviceEmail.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
-								.then(response => {
-									res.status(200).send({ message: 'Email sent'})
-								})
-								.catch(response => {
-									//create user, but Failed sending email.
-									//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
-									res.status(200).send({ message: 'Fail sending email'})
-								})
+							if(req.body.lang=='es'){
+								serviceEmailGtpEs.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
+									.then(response => {
+										res.status(200).send({ message: 'Email sent'})
+									})
+									.catch(response => {
+										//create user, but Failed sending email.
+										//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
+										res.status(200).send({ message: 'Fail sending email'})
+									})
+							}else{
+								serviceEmailGtpEn.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
+									.then(response => {
+										res.status(200).send({ message: 'Email sent'})
+									})
+									.catch(response => {
+										//create user, but Failed sending email.
+										//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
+										res.status(200).send({ message: 'Fail sending email'})
+									})
+							}
+
 
 						}else{
 							return res.status(200).send({message: 'error'})
