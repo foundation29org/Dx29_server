@@ -559,6 +559,39 @@ function continueWithRequest (req,res, needSendEmail, program){
 }
 
 function alphanumeric_unique(program) {
+		var randomIdRequest = '000001';
+		var randomIdRequestNumber = Number(randomIdRequest);
+		var actualItemNumber;
+		for(var i = 0; i < program.requests.length; i++) {
+			actualItemNumber = Number(program.requests[i].idRequest)
+			if(randomIdRequestNumber<=actualItemNumber){
+				randomIdRequestNumber= actualItemNumber+1;
+			}
+		}
+		for(var i = 0; i < program.accepted.length; i++) {
+			actualItemNumber = Number(program.accepted[i].idRequest)
+			if(randomIdRequestNumber<=actualItemNumber){
+				randomIdRequestNumber= actualItemNumber+1;
+			}
+		}
+		for(var i = 0; i < program.rejected.length; i++) {
+			actualItemNumber = Number(program.rejected[i].idRequest)
+			if(randomIdRequestNumber<=actualItemNumber){
+				randomIdRequestNumber= actualItemNumber+1;
+			}
+		}
+		for(var i = 0; i < program.externalRequests.length; i++) {
+			actualItemNumber = Number(program.externalRequests[i].idRequest)
+			if(randomIdRequestNumber<=actualItemNumber){
+				randomIdRequestNumber= actualItemNumber+1;
+			}
+		}
+		let str = randomIdRequestNumber.toString().padStart(6, "0")
+		return str;
+}
+
+/*
+function alphanumeric_unique(program) {
 		var randomIdRequest = '';
     randomIdRequest = Math.random().toString(36).split('').filter( function(value, index, self) {
         return self.indexOf(value) === index;
@@ -591,6 +624,7 @@ function alphanumeric_unique(program) {
 			return randomIdRequest;
 		}
 }
+*/
 
 function updatePatientData(data, res, needSendEmail){
 	console.log(data);
