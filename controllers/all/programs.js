@@ -1201,10 +1201,6 @@ function externalRequest (req,res){
 					const d = new Date(partsBirth[0], (partsBirth[1]-1), partsBirth[2], 0, 0, 0, 0);
 					var dateCreated = new Date(today-d.getTime())
 					var agePatient = dateCreated.getUTCFullYear() - 1970;
-					var state = 'Rejected';
-					if(req.body.form.developmentalDelay=='yes' && req.body.form.GES=='yes' && agePatient<=2){
-						state = 'Accepted';
-					}
 					if(req.body.form.terms2!=true){
 						req.body.form.developmentalDelay=null;
 						req.body.form.GES=null;
@@ -1214,7 +1210,7 @@ function externalRequest (req,res){
 
 							//send email
 							if(req.body.lang=='es'){
-								serviceEmailGtpEs.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
+								serviceEmailGtpEs.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, randomIdRequest, req.body.form.userName)
 									.then(response => {
 										res.status(200).send({ message: 'Email sent'})
 									})
@@ -1224,7 +1220,7 @@ function externalRequest (req,res){
 										res.status(200).send({ message: 'Fail sending email'})
 									})
 							}else{
-								serviceEmailGtpEn.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, state, randomIdRequest, req.body.form.userName)
+								serviceEmailGtpEn.sendMail_request_genetic_program_external_patient(req.body.form.email, req.body.lang, randomIdRequest, req.body.form.userName)
 									.then(response => {
 										res.status(200).send({ message: 'Email sent'})
 									})

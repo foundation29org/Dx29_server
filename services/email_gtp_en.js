@@ -1,6 +1,6 @@
 'use strict'
 
-const { TRANSPORTER_OPTIONS, client_server, blobAccessToken } = require('../config')
+const { TRANSPORTER_SECOND_OPTIONS, client_server, blobAccessToken } = require('../config')
 const nodemailer = require('nodemailer')
 var hbs = require('nodemailer-express-handlebars')
 
@@ -14,16 +14,16 @@ var options = {
      extName: '.hbs'
  };
 
- var transporter = nodemailer.createTransport(TRANSPORTER_OPTIONS);
+ var transporter = nodemailer.createTransport(TRANSPORTER_SECOND_OPTIONS);
  transporter.use('compile', hbs(options));
 
 
-function sendMail_request_genetic_program_external_patient (email, lang, state, randomIdRequest, userName){
+function sendMail_request_genetic_program_external_patient (email, lang, randomIdRequest, userName){
   //caso 1.1.2
   const decoded = new Promise((resolve, reject) => {
 
     var maillistbcc = [
-      TRANSPORTER_OPTIONS.auth.user
+      TRANSPORTER_SECOND_OPTIONS.auth.user
     ];
 
     var subjectlang='Together towards a diagnostic '+' [ID: '+randomIdRequest+']';
@@ -32,35 +32,28 @@ function sendMail_request_genetic_program_external_patient (email, lang, state, 
       subjectlang='Juntos hacia el diagnóstico '+' [ID: '+randomIdRequest+']';
     }
 
+    var attachments = [];
+    if(lang=='es'){
+      attachments.push({filename: 'Informative_document.pdf', path: './documents/Informative_document.pdf'});
+    }else{
+      attachments.push({filename: 'Documento_informativo.pdf', path: './documents/Documento_informativo.pdf'});
+    }
+
 
     var mailOptions = {
       to: email,
-      from: TRANSPORTER_OPTIONS.auth.user,
+      from: TRANSPORTER_SECOND_OPTIONS.auth.user,
       bcc: maillistbcc,
       subject: subjectlang,
-      template: 'request_genetic_program_external_patient/accepted/_'+lang,
+      template: 'request_genetic_program_external_patient/_'+lang,
       context: {
         client_server : client_server,
         email: email,
         randomIdRequest: randomIdRequest,
         userName: userName
-      }
+      },
+      attachments:attachments
     };
-
-    if(state=='Rejected'){
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'request_genetic_program_external_patient/rejected/_'+lang,
-        context: {
-          client_server : client_server,
-          email: email,
-          randomIdRequest: randomIdRequest
-        }
-      };
-    }
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {

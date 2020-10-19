@@ -878,71 +878,6 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
   return decoded
 }
 
-function sendMail_request_genetic_program_external_patient (email, lang, state, randomIdRequest, userName){
-  //caso 1.1.2
-  const decoded = new Promise((resolve, reject) => {
-    var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
-
-    var maillistbcc = [
-      TRANSPORTER_OPTIONS.auth.user
-    ];
-
-    var subjectlang='Together towards a diagnostic '+' [ID: '+randomIdRequest+']';
-
-    if(lang=='es'){
-      subjectlang='Juntos hacia el diagnóstico '+' [ID: '+randomIdRequest+']';
-    }
-
-
-    var mailOptions = {
-      to: email,
-      from: TRANSPORTER_OPTIONS.auth.user,
-      bcc: maillistbcc,
-      subject: subjectlang,
-      template: 'request_genetic_program_external_patient/accepted/_'+lang,
-      context: {
-        client_server : client_server,
-        email: email,
-        urlImg: urlImg,
-        randomIdRequest: randomIdRequest,
-        userName: userName
-      }
-    };
-
-    if(state=='Rejected'){
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'request_genetic_program_external_patient/rejected/_'+lang,
-        context: {
-          client_server : client_server,
-          email: email,
-          urlImg: urlImg,
-          randomIdRequest: randomIdRequest
-        }
-      };
-    }
-
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-        reject({
-          status: 401,
-          message: 'Fail sending email'
-        })
-      } else {
-        console.log('Email sent: ' + info.response);
-        resolve("ok")
-      }
-    });
-
-  });
-  return decoded
-}
-
-
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -960,6 +895,5 @@ module.exports = {
   sendMailProgramRequestToPatient,
   sendMailProgramRequestToClinician,
   sendMail_request_genetic_program_patient,
-  sendMail_request_genetic_program_clinician,
-  sendMail_request_genetic_program_external_patient
+  sendMail_request_genetic_program_clinician
 }
