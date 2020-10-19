@@ -34,9 +34,9 @@ function sendMail_request_genetic_program_external_patient (email, lang, randomI
 
     var attachments = [];
     if(lang=='es'){
-      attachments.push({filename: 'Informative_document.pdf', path: './documents/Informative_document.pdf'});
+      attachments.push({filename: 'diangosis - overview.pdf', path: './documents/Informative_document.pdf'});
     }else{
-      attachments.push({filename: 'Documento_informativo.pdf', path: './documents/Documento_informativo.pdf'});
+      attachments.push({filename: 'diagnostico - informacion.pdf', path: './documents/Documento_informativo.pdf'});
     }
 
 
