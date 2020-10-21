@@ -26,7 +26,7 @@ function sendMail_request_genetic_program_external_patient (email, lang, randomI
       TRANSPORTER_SECOND_OPTIONS.auth.user
     ];
 
-    var subjectlang='Together towards a diagnostic '+' [ID: '+randomIdRequest+']';
+    var subjectlang='Together towards the diagnosis '+' [ID: '+randomIdRequest+']';
 
     if(lang=='es'){
       subjectlang='Juntos hacia el diagnóstico '+' [ID: '+randomIdRequest+']';
