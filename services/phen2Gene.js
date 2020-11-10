@@ -63,7 +63,9 @@ async function launchPhen2Genes (req, res){
 		//res.status(200).send({message: 'algorithm saved'})
 	})
 
-  res.status(202).send(resulPhen2GeneComplete)
+  var urlTemp = (algorithm.idExecution).split('id');
+  var blobName = 'Phen2Gene/'+urlTemp[1]+'/result.json';
+  res.status(200).send({fileName: blobName, data:resulPhen2GeneComplete, message: 'found'})
 }
 
 async function getLastPhen2GenesResults (req, res){
@@ -76,9 +78,9 @@ async function getLastPhen2GenesResults (req, res){
       var urlTemp = (algorithm.idExecution).split('id');
       var blobName = 'Phen2Gene/'+urlTemp[1]+'/result.json';
       var result = await f29azureService.downloadBlob(containerName, blobName);
-      res.status(200).send(result)
+      res.status(200).send({fileName: blobName, data:result, message: 'found'})
     }else{
-      res.status(200).send({ message: 'Not found'})
+      res.status(200).send({fileName: '', data: null, message: 'Not found'})
     }
 
 	})
