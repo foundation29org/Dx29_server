@@ -17,7 +17,7 @@ const DiagnosisSchema = Schema({
 	evaluation: String,
 	notes: {type: String, default: ''},
 	infoGenesAndConditionsExomizer: {type: Object, default: []},
-	infoGenesAndConditionsPhenolyzer: {type: Object, default: []},
+	infoGenesAndConditionsPhen2Genes: {type: Object, default: []},
 	relatedConditions: {type: Object, default: []},
 	hasVcf: {type: Boolean, default: false},
 	selectedItemsFilter: {type: Object, default: []},
