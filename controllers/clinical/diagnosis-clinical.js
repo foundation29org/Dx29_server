@@ -170,12 +170,10 @@ function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer
 		if(!phenotype) {
 			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date, userName: patientCreatedBy};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
-			//listpatients.push({sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, exomizer: exomizer, phenolyzer: phenolyzer, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date});
 		}
 		if(phenotype){
 			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date, userName: patientCreatedBy};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
-			//listpatients.push({sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, exomizer: exomizer, phenolyzer: phenolyzer, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date});
 		}
 
 		/*if(listpatients.length==length){

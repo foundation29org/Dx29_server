@@ -2,7 +2,7 @@
 const Algorithms = require('../models/exe-algorithms')
 var azure = require('azure-sb')
 const crypt = require('../services/crypt')
-const { AZURE_SERVICEBUS_CONNECTION_STRING, phenolyzer_topic } = require('../config')
+const { AZURE_SERVICEBUS_CONNECTION_STRING } = require('../config')
 const serviceEmail = require('../services/email')
 const serviceBusClient = azure.createServiceBusService(AZURE_SERVICEBUS_CONNECTION_STRING);
 const servicef29bio = require('../services/f29bio')
@@ -78,7 +78,8 @@ async function getLastPhen2GenesResults (req, res){
       var urlTemp = (algorithm.idExecution).split('id');
       var blobName = 'Phen2Gene/'+urlTemp[1]+'/result.json';
       var result = await f29azureService.downloadBlob(containerName, blobName);
-      res.status(200).send({fileName: blobName, data:result, message: 'found'})
+      var resultPhen2GeneJSON = JSON.parse(result);
+      res.status(200).send({fileName: blobName, data:resultPhen2GeneJSON, message: 'found'})
     }else{
       res.status(200).send({fileName: '', data: null, message: 'Not found'})
     }
