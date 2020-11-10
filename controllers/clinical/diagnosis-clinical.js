@@ -116,28 +116,24 @@ function doFindOne(listpatients, patient, i, length, res, userId) {
 	let patientId = patient._id;
 	Diagnosis.findOne({"createdBy": patientId}, {"createdBy" : false }, (err, diagnosis) => {
 		var exomizer = false;
-		var phenolyzer = false;
 		var phen2Genes = false;
 		if(!diagnosis) {
-			doFindPhenotype(listpatients, patient, i, length, res, false, exomizer, phenolyzer,phen2Genes, patient.isArchived, null, userId);
+			doFindPhenotype(listpatients, patient, i, length, res, false, exomizer,phen2Genes, patient.isArchived, null, userId);
 		}
 		if(diagnosis){
 			if(diagnosis.infoGenesAndConditionsExomizer.length>0){
 				exomizer = true;
 			}
-			if(diagnosis.infoGenesAndConditionsPhenolyzer.length>0){
-				phenolyzer = true;
-			}
 			if(diagnosis.infoGenesAndConditionsPhen2Genes.length>0){
 				phen2Genes = true;
 			}
-			doFindPhenotype(listpatients, patient, i, length, res, diagnosis.hasVcf, exomizer, phenolyzer, phen2Genes, patient.isArchived, diagnosis._id, userId);
+			doFindPhenotype(listpatients, patient, i, length, res, diagnosis.hasVcf, exomizer, phen2Genes, patient.isArchived, diagnosis._id, userId);
 		}
 	})
 }
 
 
-function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer, phenolyzer, phen2Genes, isArchived, diagnosisid, userId) {
+function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer, phen2Genes, isArchived, diagnosisid, userId) {
 	let patientId = patient._id.toString();
 	let idencrypt= crypt.encrypt(patientId);
 
@@ -164,7 +160,7 @@ function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer
 
 		var objReturn = {};
 		var status =  'new';
-		if(phenolyzer || exomizer || phen2Genes){
+		if( exomizer || phen2Genes){
 			status = 'analyzed'
 		}
 		if(!phenotype) {

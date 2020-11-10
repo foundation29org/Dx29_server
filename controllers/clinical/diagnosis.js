@@ -29,7 +29,6 @@ function saveDiagnosis (req, res){
 	diagnosis.notes = req.body.notes
 	diagnosis.infoGenesAndConditionsExomizer = req.body.infoGenesAndConditionsExomizer
 	diagnosis.settingExomizer = req.body.settingExomizer
-	diagnosis.infoGenesAndConditionsPhenolyzer = req.body.infoGenesAndConditionsPhenolyzer
 	diagnosis.infoGenesAndConditionsPhen2Genes = req.body.infoGenesAndConditionsPhen2Genes
 	diagnosis.relatedConditions = req.body.relatedConditions
 	diagnosis.hasVcf = req.body.hasVcf
