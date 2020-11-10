@@ -832,7 +832,7 @@ function getProgramsRequestsAndStatus(req,res){
 							var date=programList[i].externalRequests[j].date
 							var status=programList[i].externalRequests[j].status
 							var applicationStatus="externalRequests";
-							result.push({patientFound:false,data:{date:date, applicationId:applicationId, birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
+							result.push({patientFound:false,data:{applicationId:applicationId, date:date, birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
 								userName:userName,lastName:lastName,phone:phone,email:email, applicationStatus:applicationStatus, status: status}})
 						}
 
