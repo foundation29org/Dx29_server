@@ -84,7 +84,7 @@ api.put('/patients/pendingJobs/:patientId', auth, patientCtrl.setPendingJobs)
 api.put('/patients/deletePendingJobs/:patientId', auth, patientCtrl.deletePendingJob)
 
 api.get('/programs/:patientId', auth, programsCtrl.checkPrograms)
-api.get('/createprogram/:name', auth, programsCtrl.newProgram)
+//api.get('/createprogram/:name', auth, programsCtrl.newProgram)
 api.post('/programs/programrequest/:programId', auth, programsCtrl.programRequest)
 api.post('/programs/getProgramRequestsAndStatus/',auth,programsCtrl.getProgramsRequestsAndStatus)
 api.post('/programs/setAccepted/',auth,programsCtrl.acceptProgram)
