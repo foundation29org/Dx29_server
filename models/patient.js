@@ -46,6 +46,7 @@ const PatientSchema = Schema({
 	//status:{actualStep: String,pendingworks:Object},
 	status: Object,
 	relationship: String,
+	previousDiagnosis: {type: String, default: null}
 })
 
 module.exports = conndbaccounts.model('Patient',PatientSchema)

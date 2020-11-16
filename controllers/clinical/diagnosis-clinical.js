@@ -164,11 +164,11 @@ function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer
 			status = 'analyzed'
 		}
 		if(!phenotype) {
-			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date, userName: patientCreatedBy};
+			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date, userName: patientCreatedBy, gender: patient.gender, birthDate: patient.birthDate, country: patient.country, previousDiagnosis: patient.previousDiagnosis};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
 		}
 		if(phenotype){
-			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date, userName: patientCreatedBy};
+			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date, userName: patientCreatedBy, gender: patient.gender, birthDate: patient.birthDate, country: patient.country, previousDiagnosis: patient.previousDiagnosis};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
 		}
 

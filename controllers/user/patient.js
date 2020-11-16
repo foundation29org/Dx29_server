@@ -67,7 +67,7 @@ function getPatientsUser (req, res){
 				patients.forEach(function(u) {
 					var id = u._id.toString();
 					var idencrypt= crypt.encrypt(id);
-					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname});
+					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, birthDate: u.birthDate, gender: u.gender, country: u.country});
 				});
 
 				//res.status(200).send({patient, patient})
@@ -85,7 +85,7 @@ function getPatientsUser (req, res){
 				patients.forEach(function(u) {
 					var id = u._id.toString();
 					var idencrypt= crypt.encrypt(id);
-					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, isArchived: u.isArchived});
+					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, isArchived: u.isArchived, birthDate: u.birthDate, gender: u.gender, country: u.country});
 				});
 
 				//res.status(200).send({patient, patient})
@@ -249,6 +249,7 @@ function savePatient (req, res){
   patient.actualStep = req.body.actualStep
   patient.stepClinic = req.body.stepClinic
 	patient.relationship = req.body.relationship
+  patient.previousDiagnosis = req.body.previousDiagnosis
 	patient.createdBy = userId
 
 	// when you save, returns an id in patientStored to access that patient
@@ -256,7 +257,7 @@ function savePatient (req, res){
 		if (err) res.status(500).send({message: `Failed to save in the database: ${err} `})
 		var id = patientStored._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname};
+		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
     if(result){
@@ -339,12 +340,12 @@ function savePatient (req, res){
 function updatePatient (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	let update = req.body
-  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship }, (err,patientUpdated) => {
+  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, (err,patientUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname};
+		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis};
 		//res.status(200).send({patient: patientUpdated, patientInfo})
 		res.status(200).send({message: 'Patient updated', patientInfo})
 
