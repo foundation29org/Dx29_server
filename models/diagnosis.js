@@ -52,6 +52,7 @@ const DiagnosisSchema = Schema({
         "VariantEffectFilters": {"remove": ["UPSTREAM_GENE_VARIANT", "INTERGENIC_VARIANT", "REGULATORY_REGION_VARIANT", "CODING_TRANSCRIPT_INTRON_VARIANT", "NON_CODING_TRANSCRIPT_INTRON_VARIANT", "SYNONYMOUS_VARIANT", "DOWNSTREAM_GENE_VARIANT", "SPLICE_REGION_VARIANT"]},
         "genomeAssembly": 'hg19'
       }},
+	date: {type: Date, default: Date.now},
 	createdBy: { type: Schema.Types.ObjectId, ref: "Patient"}
 })
 

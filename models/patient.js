@@ -46,6 +46,8 @@ const PatientSchema = Schema({
 	//status:{actualStep: String,pendingworks:Object},
 	status: Object,
 	relationship: String,
+	lastAccess: {type: Date, default: Date.now},
+	creationDate: {type: Date, default: Date.now},
 	previousDiagnosis: {type: String, default: null}
 })
 

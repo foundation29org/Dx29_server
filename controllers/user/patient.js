@@ -257,7 +257,7 @@ function savePatient (req, res){
 		if (err) res.status(500).send({message: `Failed to save in the database: ${err} `})
 		var id = patientStored._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country};
+		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country, previousDiagnosis: patient.previousDiagnosis};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
     if(result){
@@ -340,9 +340,9 @@ function savePatient (req, res){
 function updatePatient (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	let update = req.body
-  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, (err,patientUpdated) => {
+  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, {new: true}, (err,patientUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
-
+    console.log(patientUpdated);
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
 		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis};
@@ -538,6 +538,19 @@ function deletePendingJob (req, res){
 	})
 }
 
+function updateLastAccess (req, res){
+	let patientId= crypt.decrypt(req.params.patientId);
+	var actualDate = Date.now();
+	Patient.findByIdAndUpdate(patientId, {lastAccess: actualDate }, {new: true}, (err,patientUpdated) => {
+		if(patientUpdated){
+      res.status(200).send({message: 'Updated'})
+		}else{
+		console.log(err);
+    res.status(200).send({message: 'error'})
+		}
+	})
+}
+
 module.exports = {
 	getPatientsUser,
 	getPatient,
@@ -553,5 +566,6 @@ module.exports = {
   setStepClinic,
 	getPendingJobs,
 	setPendingJobs,
-	deletePendingJob
+	deletePendingJob,
+  updateLastAccess
 }
