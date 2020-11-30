@@ -63,6 +63,9 @@ api.get('/users/name/:userId', auth, userCtrl.getUserName)
 api.get('/users/email/:userId', auth, userCtrl.getUserEmail)
 api.get('/patient/email/:patientId', auth, userCtrl.getPatientEmail)
 
+api.get('/users/showintrowizard/:userId', auth, userCtrl.getShowIntroWizard)
+api.put('/users/showintrowizard/:userId', auth, userCtrl.setShowIntroWizard)
+
 //export data
 api.get('/exportdata/:patientId', auth, exportCtrl.getData)
 
