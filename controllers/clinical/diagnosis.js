@@ -79,7 +79,6 @@ function deleteDiagnosis (req, res){
 function updateFilters (req, res){
 	let diagnosisId= req.params.diagnosisId;
 	let update = req.body
-	console.log(update);
 	Diagnosis.findByIdAndUpdate(diagnosisId, { selectedItemsFilter: update }, {select: '-createdBy', new: true}, (err,diagnosisUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 

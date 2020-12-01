@@ -340,13 +340,15 @@ function savePatient (req, res){
 function updatePatient (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	let update = req.body
-  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, {new: true}, (err,patientUpdated) => {
+  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, {new: true}, async (err,patientUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
     console.log(patientUpdated);
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
 		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis};
-		//res.status(200).send({patient: patientUpdated, patientInfo})
+		let containerName = (idencrypt).substr(1);
+		var result = await f29azureService.createContainers(containerName);
+		console.log(result);
 		res.status(200).send({message: 'Patient updated', patientInfo})
 
 	})
@@ -459,7 +461,6 @@ function setActualStep (req, res){
 
 function getStepClinic (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
-
 	Patient.findById(patientId, {"_id" : false , "createdBy" : false }, (err, patient) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 		if(!patient) return res.status(202).send({message: `The patient does not exist`})
@@ -467,14 +468,13 @@ function getStepClinic (req, res){
 		if(patient.stepClinic!=undefined){
 			result = patient.stepClinic
 		}
-		res.status(200).send(result)
+		res.status(200).send({stepClinic:result})
 	})
 }
 
 function setStepClinic (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	var stepClinic = req.body.actualStep;
-	console.log(stepClinic);
 	Patient.findByIdAndUpdate(patientId, {stepClinic: stepClinic }, {new: true}, (err,patientUpdated) => {
 		if(patientUpdated){
 		return res.status(200).send({message: 'Updated'})
