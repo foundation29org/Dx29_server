@@ -42,7 +42,7 @@ const PatientSchema = Schema({
 	isArchived: {type: Boolean, default: false},
 	sharing: {type: Object, default: []},
 	actualStep: {type: String, default: '0.0'},
-	stepClinic: {type: String, default: '5.0'},
+	stepClinic: {type: String, default: '6.0'},
 	//status:{actualStep: String,pendingworks:Object},
 	status: Object,
 	relationship: String,
