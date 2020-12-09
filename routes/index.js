@@ -157,6 +157,7 @@ api.post('/diagnosis/:patientId', auth, diagnosisCtrl.saveDiagnosis)
 api.put('/diagnosis/:diagnosisId', auth, diagnosisCtrl.updateDiagnosis)
 api.delete('/diagnosis/:diagnosisId', auth, diagnosisCtrl.deleteDiagnosis)//de momento no se usa
 api.put('/diagnosis/filters/:diagnosisId', auth, diagnosisCtrl.updateFilters)
+api.put('/diagnosis/relatedconditions/:diagnosisId', auth, diagnosisCtrl.updateRelatedconditions)
 
 api.get('/case/:userId', auth, diagnosisCasesCtrl.getPatientsInfo)
 api.get('/sharedcase/:userId', auth, diagnosisCasesCtrl.getSharedPatientsInfo)

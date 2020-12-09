@@ -87,10 +87,22 @@ function updateFilters (req, res){
 	})
 }
 
+function updateRelatedconditions (req, res){
+	let diagnosisId= req.params.diagnosisId;
+	let update = req.body
+	Diagnosis.findByIdAndUpdate(diagnosisId, { relatedConditions: update }, {select: '-createdBy', new: true}, (err,diagnosisUpdated) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+		var result= diagnosisUpdated.relatedConditions;
+		res.status(200).send({message: 'Diagnosis updated', relatedConditions: result})
+
+	})
+}
+
 module.exports = {
 	getDiagnosis,
 	saveDiagnosis,
 	updateDiagnosis,
 	deleteDiagnosis,
-	updateFilters
+	updateFilters,
+	updateRelatedconditions
 }
