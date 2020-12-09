@@ -73,13 +73,17 @@ function getSharedPatientsInfo (req, res){
 													console.log(err);
 												}
 												if(patientUpdated){
-													tempListPatients.push(patients[i]);
+													if(!foundPatient(patients[i]._id, tempListPatients)){
+														tempListPatients.push(patients[i]);
+													}
 												}
 
 											})
 										}else if(patients[i].sharing[j].email == user.email && patients[i].sharing[j]._id == req.params.userId && patients[i].sharing[j].state == ''){
 											//lo tiene compartido
-											tempListPatients.push(patients[i]);
+											if(!foundPatient(patients[i]._id, tempListPatients)){
+												tempListPatients.push(patients[i]);
+											}
 										}
 									}
 
@@ -110,6 +114,16 @@ function getSharedPatientsInfo (req, res){
 			res.status(401).send({message: 'without permission'})
 		}
 	})
+}
+
+function foundPatient(id, list) {
+	var found = false;
+	for (var i = 0; i < list.length && !found; i++) {
+		if(id==list[i]._id){
+			found= true;
+		}
+	}
+	return found;
 }
 
 function doFindOne(listpatients, patient, i, length, res, userId) {
