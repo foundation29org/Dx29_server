@@ -250,14 +250,24 @@ function savePatient (req, res){
   patient.stepClinic = req.body.stepClinic
 	patient.relationship = req.body.relationship
   patient.previousDiagnosis = req.body.previousDiagnosis
+  patient.avatar = req.body.avatar
 	patient.createdBy = userId
 
+  if(req.body.avatar==undefined){
+    if(patient.gender!=undefined){
+      if(patient.gender=='male'){
+				patient.avatar='boy-0'
+			}else if(patient.gender=='female'){
+				patient.avatar='girl-0'
+			}
+    }
+  }
 	// when you save, returns an id in patientStored to access that patient
 	patient.save (async (err, patientStored) => {
 		if (err) res.status(500).send({message: `Failed to save in the database: ${err} `})
 		var id = patientStored._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country, previousDiagnosis: patient.previousDiagnosis};
+		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country, previousDiagnosis: patient.previousDiagnosis, avatar: patientUpdated.avatar};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
     if(result){
@@ -340,12 +350,25 @@ function savePatient (req, res){
 function updatePatient (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	let update = req.body
-  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis }, {new: true}, async (err,patientUpdated) => {
+  var avatar = '';
+  if(req.body.avatar==undefined){
+    if(req.body.gender!=undefined){
+      if(req.body.gender=='male'){
+				avatar='boy-0'
+			}else if(req.body.gender=='female'){
+				avatar='girl-0'
+			}
+    }
+  }else{
+    avatar = req.body.avatar;
+  }
+
+  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis, avatar: avatar }, {new: true}, async (err,patientUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
     console.log(patientUpdated);
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis};
+		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis, avatar: patientUpdated.avatar};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
 		console.log(result);
