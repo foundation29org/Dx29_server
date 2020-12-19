@@ -63,6 +63,9 @@ api.get('/users/name/:userId', auth, userCtrl.getUserName)
 api.get('/users/email/:userId', auth, userCtrl.getUserEmail)
 api.get('/patient/email/:patientId', auth, userCtrl.getPatientEmail)
 
+api.get('/users/showintrowizard/:userId', auth, userCtrl.getShowIntroWizard)
+api.put('/users/showintrowizard/:userId', auth, userCtrl.setShowIntroWizard)
+
 //export data
 api.get('/exportdata/:patientId', auth, exportCtrl.getData)
 
@@ -79,6 +82,7 @@ api.get('/patients/actualstep/:patientId', auth, patientCtrl.getActualStep)
 api.put('/patients/actualstep/:patientId', auth, patientCtrl.setActualStep)
 api.get('/case/stepclinic/:patientId', auth, patientCtrl.getStepClinic)
 api.put('/case/stepclinic/:patientId', auth, patientCtrl.setStepClinic)
+api.get('/case/updateLastAccess/:patientId', auth, patientCtrl.updateLastAccess)
 api.get('/patients/pendingJobs/:patientId', auth, patientCtrl.getPendingJobs)
 api.put('/patients/pendingJobs/:patientId', auth, patientCtrl.setPendingJobs)
 api.put('/patients/deletePendingJobs/:patientId', auth, patientCtrl.deletePendingJob)
@@ -153,6 +157,7 @@ api.post('/diagnosis/:patientId', auth, diagnosisCtrl.saveDiagnosis)
 api.put('/diagnosis/:diagnosisId', auth, diagnosisCtrl.updateDiagnosis)
 api.delete('/diagnosis/:diagnosisId', auth, diagnosisCtrl.deleteDiagnosis)//de momento no se usa
 api.put('/diagnosis/filters/:diagnosisId', auth, diagnosisCtrl.updateFilters)
+api.put('/diagnosis/relatedconditions/:diagnosisId', auth, diagnosisCtrl.updateRelatedconditions)
 
 api.get('/case/:userId', auth, diagnosisCasesCtrl.getPatientsInfo)
 api.get('/sharedcase/:userId', auth, diagnosisCasesCtrl.getSharedPatientsInfo)

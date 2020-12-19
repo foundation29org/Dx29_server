@@ -855,8 +855,33 @@ function getPatientEmail (req, res){
 
 
 	})
+}
 
+function getShowIntroWizard (req, res){
+	let userId= crypt.decrypt(req.params.userId);
+	//añado  {"_id" : false} para que no devuelva el _id
+	User.findById(userId, {"_id" : false , "password" : false, "__v" : false, "confirmationCode" : false, "loginAttempts" : false, "confirmed" : false, "role" : false, "lastLogin" : false}, (err, user) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+		var result = "Jhon";
+		if(user){
+			result = user.showIntroWizard;
+		}
+		res.status(200).send({showIntroWizard: result})
+	})
+}
 
+function setShowIntroWizard (req, res){
+	let userId= crypt.decrypt(req.params.userId);
+	var showIntroWizard = req.body.showIntroWizard;
+	console.log(showIntroWizard);
+	User.findByIdAndUpdate(userId, {showIntroWizard: showIntroWizard }, {new: true}, (err,userUpdated) => {
+		if(userUpdated){
+		return res.status(200).send({message: 'Updated', showIntroWizard: req.body.showIntroWizard})
+		}else{
+		console.log(err);
+		return res.status(200).send({message: 'error'})
+		}
+	})
 }
 
 module.exports = {
@@ -873,5 +898,7 @@ module.exports = {
 	sendEmail,
 	getUserName,
 	getUserEmail,
-	getPatientEmail
+	getPatientEmail,
+	getShowIntroWizard,
+	setShowIntroWizard
 }

@@ -73,13 +73,17 @@ function getSharedPatientsInfo (req, res){
 													console.log(err);
 												}
 												if(patientUpdated){
-													tempListPatients.push(patients[i]);
+													if(!foundPatient(patients[i]._id, tempListPatients)){
+														tempListPatients.push(patients[i]);
+													}
 												}
 
 											})
 										}else if(patients[i].sharing[j].email == user.email && patients[i].sharing[j]._id == req.params.userId && patients[i].sharing[j].state == ''){
 											//lo tiene compartido
-											tempListPatients.push(patients[i]);
+											if(!foundPatient(patients[i]._id, tempListPatients)){
+												tempListPatients.push(patients[i]);
+											}
 										}
 									}
 
@@ -110,6 +114,16 @@ function getSharedPatientsInfo (req, res){
 			res.status(401).send({message: 'without permission'})
 		}
 	})
+}
+
+function foundPatient(id, list) {
+	var found = false;
+	for (var i = 0; i < list.length && !found; i++) {
+		if(id==list[i]._id){
+			found= true;
+		}
+	}
+	return found;
 }
 
 function doFindOne(listpatients, patient, i, length, res, userId) {
@@ -163,12 +177,20 @@ function doFindPhenotype(listpatients, patient, i, length, res, hasVcf, exomizer
 		if( exomizer || phen2Genes){
 			status = 'analyzed'
 		}
+
+		if(patient.avatar==undefined){
+			if(patient.gender=='male'){
+				patient.avatar='boy-0'
+			}else if(patient.gender=='female'){
+				patient.avatar='girl-0'
+			}
+		}
 		if(!phenotype) {
-			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date, userName: patientCreatedBy};
+			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: 0, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date:date, userName: patientCreatedBy, gender: patient.gender, birthDate: patient.birthDate, country: patient.country, previousDiagnosis: patient.previousDiagnosis, avatar: patient.avatar};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
 		}
 		if(phenotype){
-			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date, userName: patientCreatedBy};
+			objReturn = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, hasvcf: hasVcf, symptoms: phenotype.data.length, status: status, isArchived: isArchived, diagnosisId: diagnosisid, permissions: permissions, alias: alias, date: date, userName: patientCreatedBy, gender: patient.gender, birthDate: patient.birthDate, country: patient.country, previousDiagnosis: patient.previousDiagnosis, avatar: patient.avatar};
 			returnResultGetSharedPatientsInfo(listpatients,length, res, objReturn)
 		}
 

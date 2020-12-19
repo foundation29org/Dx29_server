@@ -49,6 +49,7 @@ const UserSchema = Schema({
 	blockedaccount: {type: Boolean, default: false},
 	permissions: {type: Object, default: {}},
 	platform: {type: String, default: ''},
+	showIntroWizard: {type: Boolean, default: true},
 })
 
 

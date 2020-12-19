@@ -67,7 +67,7 @@ function getPatientsUser (req, res){
 				patients.forEach(function(u) {
 					var id = u._id.toString();
 					var idencrypt= crypt.encrypt(id);
-					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname});
+					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, birthDate: u.birthDate, gender: u.gender, country: u.country});
 				});
 
 				//res.status(200).send({patient, patient})
@@ -85,7 +85,7 @@ function getPatientsUser (req, res){
 				patients.forEach(function(u) {
 					var id = u._id.toString();
 					var idencrypt= crypt.encrypt(id);
-					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, isArchived: u.isArchived});
+					listpatients.push({sub:idencrypt, patientName: u.patientName, surname: u.surname, isArchived: u.isArchived, birthDate: u.birthDate, gender: u.gender, country: u.country});
 				});
 
 				//res.status(200).send({patient, patient})
@@ -249,14 +249,25 @@ function savePatient (req, res){
   patient.actualStep = req.body.actualStep
   patient.stepClinic = req.body.stepClinic
 	patient.relationship = req.body.relationship
+  patient.previousDiagnosis = req.body.previousDiagnosis
+  patient.avatar = req.body.avatar
 	patient.createdBy = userId
 
+  if(req.body.avatar==undefined){
+    if(patient.gender!=undefined){
+      if(patient.gender=='male'){
+				patient.avatar='boy-0'
+			}else if(patient.gender=='female'){
+				patient.avatar='girl-0'
+			}
+    }
+  }
 	// when you save, returns an id in patientStored to access that patient
 	patient.save (async (err, patientStored) => {
 		if (err) res.status(500).send({message: `Failed to save in the database: ${err} `})
 		var id = patientStored._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname};
+		var patientInfo = {sub:idencrypt, patientName: patient.patientName, surname: patient.surname, birthDate: patient.birthDate, gender: patient.gender, country: patient.country, previousDiagnosis: patient.previousDiagnosis, avatar: patient.avatar};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
     if(result){
@@ -339,13 +350,28 @@ function savePatient (req, res){
 function updatePatient (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	let update = req.body
-  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship }, (err,patientUpdated) => {
-		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+  var avatar = '';
+  if(req.body.avatar==undefined){
+    if(req.body.gender!=undefined){
+      if(req.body.gender=='male'){
+				avatar='boy-0'
+			}else if(req.body.gender=='female'){
+				avatar='girl-0'
+			}
+    }
+  }else{
+    avatar = req.body.avatar;
+  }
 
+  Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis, avatar: avatar }, {new: true}, async (err,patientUpdated) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+    console.log(patientUpdated);
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
-		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname};
-		//res.status(200).send({patient: patientUpdated, patientInfo})
+		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis, avatar: patientUpdated.avatar};
+		let containerName = (idencrypt).substr(1);
+		var result = await f29azureService.createContainers(containerName);
+		console.log(result);
 		res.status(200).send({message: 'Patient updated', patientInfo})
 
 	})
@@ -458,7 +484,6 @@ function setActualStep (req, res){
 
 function getStepClinic (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
-
 	Patient.findById(patientId, {"_id" : false , "createdBy" : false }, (err, patient) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 		if(!patient) return res.status(202).send({message: `The patient does not exist`})
@@ -466,14 +491,13 @@ function getStepClinic (req, res){
 		if(patient.stepClinic!=undefined){
 			result = patient.stepClinic
 		}
-		res.status(200).send(result)
+		res.status(200).send({stepClinic:result})
 	})
 }
 
 function setStepClinic (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	var stepClinic = req.body.actualStep;
-	console.log(stepClinic);
 	Patient.findByIdAndUpdate(patientId, {stepClinic: stepClinic }, {new: true}, (err,patientUpdated) => {
 		if(patientUpdated){
 		return res.status(200).send({message: 'Updated'})
@@ -537,6 +561,19 @@ function deletePendingJob (req, res){
 	})
 }
 
+function updateLastAccess (req, res){
+	let patientId= crypt.decrypt(req.params.patientId);
+	var actualDate = Date.now();
+	Patient.findByIdAndUpdate(patientId, {lastAccess: actualDate }, {new: true}, (err,patientUpdated) => {
+		if(patientUpdated){
+      res.status(200).send({message: 'Updated'})
+		}else{
+		console.log(err);
+    res.status(200).send({message: 'error'})
+		}
+	})
+}
+
 module.exports = {
 	getPatientsUser,
 	getPatient,
@@ -552,5 +589,6 @@ module.exports = {
   setStepClinic,
 	getPendingJobs,
 	setPendingJobs,
-	deletePendingJob
+	deletePendingJob,
+  updateLastAccess
 }
