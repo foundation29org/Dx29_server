@@ -35,8 +35,33 @@ function getTranslationDictionary (req, res){
   });
 }
 
+function callPhen2Genes (listHPOs,depth){
+  return new Promise ((resolve,reject) =>{
+    request.post({url:config.f29bio+'/api/Phen2Gene/calc',json: true,body:listHPOs}, (error, res, body) => {
+      if (error) {
+        console.error(error)
+        resolve(null)
+      }
+      resolve(body)
+    });
+  });
+}
+
+function getDiseasesOfGenes (listGenes){
+  return new Promise ((resolve,reject) =>{
+    request.post({url:config.f29bio+'/api/BioEntity/gene/disease',json: true,body:listGenes}, (error, res, body) => {
+      if (error) {
+        console.error(error)
+        resolve(null)
+      }
+      resolve(body)
+    });
+  });
+}
 
 module.exports = {
 	getSuccessors,
-  getTranslationDictionary
+  getTranslationDictionary,
+  callPhen2Genes,
+  getDiseasesOfGenes
 }

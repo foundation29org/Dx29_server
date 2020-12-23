@@ -20,7 +20,7 @@ const superadmninUsersClinicalCtrl = require('../controllers/superadmin/users-cl
 
 const hpoServiceCtrl = require('../services/hpo-info')
 const exomizerserviceCtrl = require('../services/exomizer')
-const phenolyzerserviceCtrl = require('../services/phenolyzer')
+const phene2GeneserviceCtrl = require('../services/phen2Gene')
 const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
@@ -63,6 +63,9 @@ api.get('/users/name/:userId', auth, userCtrl.getUserName)
 api.get('/users/email/:userId', auth, userCtrl.getUserEmail)
 api.get('/patient/email/:patientId', auth, userCtrl.getPatientEmail)
 
+api.get('/users/showintrowizard/:userId', auth, userCtrl.getShowIntroWizard)
+api.put('/users/showintrowizard/:userId', auth, userCtrl.setShowIntroWizard)
+
 //export data
 api.get('/exportdata/:patientId', auth, exportCtrl.getData)
 
@@ -79,12 +82,13 @@ api.get('/patients/actualstep/:patientId', auth, patientCtrl.getActualStep)
 api.put('/patients/actualstep/:patientId', auth, patientCtrl.setActualStep)
 api.get('/case/stepclinic/:patientId', auth, patientCtrl.getStepClinic)
 api.put('/case/stepclinic/:patientId', auth, patientCtrl.setStepClinic)
+api.get('/case/updateLastAccess/:patientId', auth, patientCtrl.updateLastAccess)
 api.get('/patients/pendingJobs/:patientId', auth, patientCtrl.getPendingJobs)
 api.put('/patients/pendingJobs/:patientId', auth, patientCtrl.setPendingJobs)
 api.put('/patients/deletePendingJobs/:patientId', auth, patientCtrl.deletePendingJob)
 
 api.get('/programs/:patientId', auth, programsCtrl.checkPrograms)
-api.get('/createprogram/:name', auth, programsCtrl.newProgram)
+//api.get('/createprogram/:name', auth, programsCtrl.newProgram)
 api.post('/programs/programrequest/:programId', auth, programsCtrl.programRequest)
 api.post('/programs/getProgramRequestsAndStatus/',auth,programsCtrl.getProgramsRequestsAndStatus)
 api.post('/programs/setAccepted/',auth,programsCtrl.acceptProgram)
@@ -140,8 +144,10 @@ api.get('/exomizerservice/:patientId', exomizerserviceCtrl.observerProcessExomiz
 api.get('/exomizerservices/:patientId', exomizerserviceCtrl.testProcessExomizer)
 api.get('/exomizerservices/cancel/:patientId', exomizerserviceCtrl.cancelProcessExomizer)
 api.post('/exomizerservices/moveCorruptedVCF/:patientId', exomizerserviceCtrl.moveCorruptedVCFsBlobgenomics)
-api.get('/phenolyzerservice/:patientId', phenolyzerserviceCtrl.observerProcessPhenolyzer)
-api.get('/phenolyzerservices/:patientId', phenolyzerserviceCtrl.testProcessPhenolyzer)
+
+//phen2Gene
+api.post('/phen2Gene/:patientId', auth, phene2GeneserviceCtrl.launchPhen2Genes)
+api.get('/lastPhen2Gene/:patientId', auth, phene2GeneserviceCtrl.getLastPhen2GenesResults)
 
 //diagnóstico
 
@@ -151,6 +157,7 @@ api.post('/diagnosis/:patientId', auth, diagnosisCtrl.saveDiagnosis)
 api.put('/diagnosis/:diagnosisId', auth, diagnosisCtrl.updateDiagnosis)
 api.delete('/diagnosis/:diagnosisId', auth, diagnosisCtrl.deleteDiagnosis)//de momento no se usa
 api.put('/diagnosis/filters/:diagnosisId', auth, diagnosisCtrl.updateFilters)
+api.put('/diagnosis/relatedconditions/:diagnosisId', auth, diagnosisCtrl.updateRelatedconditions)
 
 api.get('/case/:userId', auth, diagnosisCasesCtrl.getPatientsInfo)
 api.get('/sharedcase/:userId', auth, diagnosisCasesCtrl.getSharedPatientsInfo)

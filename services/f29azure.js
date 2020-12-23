@@ -136,6 +136,39 @@ async function createContainerIfNotExists(){
 
 }
 
+  async function createBlob(containerName, algorithmName, data, fileName, date){
+    const containerClient = blobServiceClientGenomics.getContainerClient(containerName);
+    const content = data;
+    var fileNameToSave=algorithmName+'/'+date+'/'+fileName
+    const blockBlobClient = containerClient.getBlockBlobClient(fileNameToSave);
+    const uploadBlobResponse = await blockBlobClient.upload(content, content.length);
+    console.log(`Upload block blob ${fileNameToSave} successfully`, uploadBlobResponse.requestId);
+  }
+
+  async function downloadBlob(containerName, blobName){
+    const containerClient = blobServiceClientGenomics.getContainerClient(containerName);
+    const blobClient = containerClient.getBlobClient(blobName);
+    // Get blob content from position 0 to the end
+    // In Node.js, get downloaded data by accessing downloadBlockBlobResponse.readableStreamBody
+    const downloadBlockBlobResponse = await blobClient.download();
+    const downloaded = (
+      await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)
+    ).toString();
+    return downloaded;
+  }
+
+  async function streamToBuffer(readableStream) {
+    return new Promise((resolve, reject) => {
+      const chunks = [];
+      readableStream.on("data", (data) => {
+        chunks.push(data instanceof Buffer ? data : Buffer.from(data));
+      });
+      readableStream.on("end", () => {
+        resolve(Buffer.concat(chunks));
+      });
+      readableStream.on("error", reject);
+    });
+  }
 
 module.exports = {
 	getDetectLanguage,
@@ -143,5 +176,7 @@ module.exports = {
   getAzureBlobSasTokenWithContainer,
   deleteContainers,
   createContainers,
-  createContainerIfNotExists
+  createContainerIfNotExists,
+  createBlob,
+  downloadBlob
 }

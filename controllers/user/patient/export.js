@@ -34,7 +34,7 @@ function getData (req, res){
 					phenotypeHistory.forEach(function(phenotype) {
 						listPhenotypeHistory.push(phenotype);
 					});
-					result.push({phenotypeWistory:listPhenotypeHistory});
+					result.push({phenotypeHistory:listPhenotypeHistory});
 
 					Genotype.findOne({"createdBy": patientId}, {"createdBy" : false }, (err, genotype) => {
 						if(genotype){

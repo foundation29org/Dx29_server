@@ -29,7 +29,7 @@ function saveDiagnosis (req, res){
 	diagnosis.notes = req.body.notes
 	diagnosis.infoGenesAndConditionsExomizer = req.body.infoGenesAndConditionsExomizer
 	diagnosis.settingExomizer = req.body.settingExomizer
-	diagnosis.infoGenesAndConditionsPhenolyzer = req.body.infoGenesAndConditionsPhenolyzer
+	diagnosis.infoGenesAndConditionsPhen2Genes = req.body.infoGenesAndConditionsPhen2Genes
 	diagnosis.relatedConditions = req.body.relatedConditions
 	diagnosis.hasVcf = req.body.hasVcf
 	diagnosis.selectedItemsFilter = req.body.selectedItemsFilter
@@ -79,11 +79,21 @@ function deleteDiagnosis (req, res){
 function updateFilters (req, res){
 	let diagnosisId= req.params.diagnosisId;
 	let update = req.body
-	console.log(update);
 	Diagnosis.findByIdAndUpdate(diagnosisId, { selectedItemsFilter: update }, {select: '-createdBy', new: true}, (err,diagnosisUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 
 		res.status(200).send({message: 'Diagnosis updated', diagnosis: diagnosisUpdated})
+
+	})
+}
+
+function updateRelatedconditions (req, res){
+	let diagnosisId= req.params.diagnosisId;
+	let update = req.body
+	Diagnosis.findByIdAndUpdate(diagnosisId, { relatedConditions: update }, {select: '-createdBy', new: true}, (err,diagnosisUpdated) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+		var result= diagnosisUpdated.relatedConditions;
+		res.status(200).send({message: 'Diagnosis updated', relatedConditions: result})
 
 	})
 }
@@ -93,5 +103,6 @@ module.exports = {
 	saveDiagnosis,
 	updateDiagnosis,
 	deleteDiagnosis,
-	updateFilters
+	updateFilters,
+	updateRelatedconditions
 }

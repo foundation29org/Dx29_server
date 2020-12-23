@@ -11,7 +11,7 @@ const sharedKeyCredentialGenomics = new storage.StorageSharedKeyCredential(accou
 var blobService = azure
       .createBlobServiceWithSas(config.blobAccessToken.blobAccountUrl, config.blobAccessToken.sasToken)
 	  .withFilter(new azure.ExponentialRetryPolicyFilter());
-	 
+
 function getToken(containerName){
 	var containerName = containerName;
 	//var category = config.translationCategory;
@@ -35,6 +35,7 @@ function getToken(containerName){
 	return containerSAS;
 	//res.status(200).send({containerSAS: containerSAS})
 }
+
 function getMedicalReports (patientIdCrypt){
 	var token = getToken(patientIdCrypt)
 	var blobService = azure
@@ -121,7 +122,7 @@ function getAnalysedStatusGeneData(patientIdCrypt){
 					var filesFound=false;
 					for (var i = 0; i < result.entries.length; i++) {
 						if((result.entries[i].name).indexOf('exomiser')>-1){
-							filesFound=true;							
+							filesFound=true;
 						}
 					};
 					if(filesFound==false){
