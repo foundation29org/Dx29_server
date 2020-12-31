@@ -12,7 +12,8 @@
     "getContainersNames": "node -e \"require('./services/blobgenomicsUpdate/blobgenomicsUpdate.js').getContainersNameForPatients()\"",
     "getAllPatientsNCR": "node -e \"require('./services/ncrUpdate/ncrUpdate.js').getPatientsAndUpdateEnterValuesListToUpdate()\"",
     "updateBlobgenomicsNCR": "node -e \"require('./services/ncrUpdate/ncrUpdate.js').updateBlobgenomicsStructureNCRDocURL()\"",
-    "createContainerIfNotExists": "node -e \"require('./services/f29azure.js').createContainerIfNotExists()\""
+    "createContainerIfNotExists": "node -e \"require('./services/f29azure.js').createContainerIfNotExists()\"",
+    "seeSharing": "node -e \"require('./services/f29azure.js').seeSharing()\""
   },
   "author": "LOA",
   "license": "MIT",

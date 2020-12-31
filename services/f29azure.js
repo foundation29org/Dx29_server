@@ -170,6 +170,60 @@ async function createContainerIfNotExists(){
     });
   }
 
+  async function seeSharing(){
+      var listPatients=[];
+      await User.find({platform : "Dx29"},async (err, users) => {
+          if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+          if(users){
+              console.log("Get users")
+              for(var i = 0; i < users.length; i++) {
+                  await Patient.find({createdBy:users[i]._id},(err,patientsFound)=>{
+                      if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+                      if(patientsFound.length>0){
+                          //console.log("Patient found")
+                          for(var j=0;j<patientsFound.length;j++){
+                           listPatients.push(patientsFound[j])
+                          }
+                      }
+                  })
+              }
+              console.log("Write output")
+              console.log(listPatients.length)
+              var counbt = 0;
+              for(var i=0;i<listPatients.length;i++){
+                if( listPatients[i].sharing!=undefined){
+                  var found = false;
+                  for (var j = 0; j < listPatients[i].sharing.length; j++) {
+                    if(listPatients[i].sharing[j].patientid!=undefined){
+                      var tempo =listPatients[i].sharing[j].patientid.toString()
+                      var resu2 = crypt.decrypt(tempo);
+                      if(resu2!=listPatients[i]._id){
+
+                        console.log('-----------------------------------------');
+                        console.log(listPatients[i]._id);
+                        console.log(resu2);
+                        console.log(listPatients[i].sharing[j].email)
+
+                        counbt++;
+                        found = true;
+                      }
+                    }
+
+                  }
+                  if(found){
+                    console.log(listPatients[i].sharing)
+                  }
+                }
+
+
+              }
+              console.log(counbt);
+              console.log("finish")
+          }
+      });
+
+  }
+
 module.exports = {
 	getDetectLanguage,
   getTranslationDictionary,
@@ -178,5 +232,6 @@ module.exports = {
   createContainers,
   createContainerIfNotExists,
   createBlob,
-  downloadBlob
+  downloadBlob,
+  seeSharing
 }

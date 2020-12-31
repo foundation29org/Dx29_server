@@ -357,15 +357,39 @@ function rejectpermission(req, res){
 
 function setPermissions(req,res){
 	let patientId = crypt.decrypt(req.params.patientId);
-	var permissions = req.body
-	Patient.findByIdAndUpdate(patientId, { sharing: permissions }, {new: true}, (err, patientUpdated) => {
-		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
-		if(patientUpdated){
-			return res.status(200).send({ message: 'updated'})
+	var sharingId = req.body.sharingId;
+	var permissions = req.body.permissions;
+	Patient.findById(patientId, (err, patient) => {
+		if (err) return res.status(500).send({message: `Error deleting the case: ${err}`})
+		if(patient){
+			var found = false;
+			var objRes = {};
+			for (var i = 0; i < patient.sharing.length && !found; i++) {
+				if(patient.sharing[i]._id == sharingId){
+					patient.sharing[i].permissions = permissions;
+					found = true;
+				}
+			}
+			if(found){
+				objRes = patient.sharing;
+				Patient.findByIdAndUpdate(patientId, { sharing: objRes }, {new: true}, (err, patientUpdated) => {
+					if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+					if(patientUpdated){
+						return res.status(200).send({ message: 'updated'})
+					}else{
+						return res.status(200).send({ message: 'not updated'})
+					}
+				})
+			}else{
+				return res.status(200).send({ message: 'not updated'})
+			}
+
 		}else{
 			return res.status(200).send({ message: 'not updated'})
 		}
 	})
+
+
 }
 
 function getDataFromSharingAccountsListPatients(req, res){
@@ -395,6 +419,7 @@ async function processObj(userId, obj, roleReq, res){
 	var contador = 0;
 	for (var i = 0; i < obj.length; i++) {
 		let patientId = crypt.decrypt(obj[i].sub);
+		let patientIdEncr = obj[i].sub;
 		await Patient.findById(patientId, (err, patient) => {
 			if(patient){
 				if(!patient.sharing){
@@ -430,7 +455,18 @@ async function processObj(userId, obj, roleReq, res){
 						if(patient.sharing[i].date){
 							date = patient.sharing[i].date;
 						}
-						result.push({patientid: patientidenc, patientName: alias, _id: patient.sharing[i]._id, email: patient.sharing[i].email, state: state, role: role, permissions: permissions, invitedby: invitedby, date: date, internalmessage: internalmessage})
+						/*if(patient.sharing[i].patientid && roleReq == 'User'){
+							if(patientIdEncr==patient.sharing[i].patientid){
+								result.push({patientid: patientidenc, patientName: alias, _id: patient.sharing[i]._id, email: patient.sharing[i].email, state: state, role: role, permissions: permissions, invitedby: invitedby, date: date, internalmessage: internalmessage})
+							}
+						}else{
+							result.push({patientid: patientidenc, patientName: alias, _id: patient.sharing[i]._id, email: patient.sharing[i].email, state: state, role: role, permissions: permissions, invitedby: invitedby, date: date, internalmessage: internalmessage})
+						}*/
+						if(patientIdEncr==patient.sharing[i].patientid || patient.sharing[i].patientid==undefined){
+							result.push({patientid: patientidenc, patientName: alias, _id: patient.sharing[i]._id, email: patient.sharing[i].email, state: state, role: role, permissions: permissions, invitedby: invitedby, date: date, internalmessage: internalmessage})
+						}
+
+
 					}else{
 						//result.push({_id: patient.sharing[i]._id, email: patient.sharing[i].email, state: state, role: role, permissions: permissions})
 					}
