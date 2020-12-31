@@ -206,12 +206,28 @@ async function createContainerIfNotExists(){
 
                         counbt++;
                         found = true;
+                        listPatients[i].sharing[j] = null;
                       }
                     }
 
                   }
                   if(found){
+            				var copySharing = [];
+            				for (var ik = 0; ik < listPatients[i].sharing.length; ik++) {
+            	        if(listPatients[i].sharing[ik]!=undefined && listPatients[i].sharing[ik]!=null){
+            	          copySharing.push(listPatients[i].sharing[ik]);
+            	        }
+            	      }
                     console.log(listPatients[i].sharing)
+                    console.log(copySharing)
+                    console.log('-----------------------------------------');
+                  await Patient.findByIdAndUpdate(listPatients[i]._id, { sharing: copySharing }, {new: true}, (err,patientUpdated) => {
+            					if(patientUpdated){
+            						console.log('updated');
+            					}else{
+            					  console.log('not updated');
+            					}
+            				})
                   }
                 }
 
