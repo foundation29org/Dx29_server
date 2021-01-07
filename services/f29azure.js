@@ -240,6 +240,57 @@ async function createContainerIfNotExists(){
 
   }
 
+  async function setShowSwalIntro(){
+      var listPatients=[];
+      await User.find({platform : "Dx29"},async (err, users) => {
+          if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+          if(users){
+              console.log("Get users")
+              for(var i = 0; i < users.length; i++) {
+                  await Patient.find({createdBy:users[i]._id},(err,patientsFound)=>{
+                      if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+                      if(patientsFound.length>0){
+                          //console.log("Patient found")
+                          for(var j=0;j<patientsFound.length;j++){
+                           listPatients.push(patientsFound[j])
+                          }
+                      }
+                  })
+              }
+              console.log("Write output")
+              console.log(listPatients.length)
+              for(var i=0;i<listPatients.length;i++){
+                if( listPatients[i].sharing!=undefined){
+                  var found = false;
+                  for (var j = 0; j < listPatients[i].sharing.length; j++) {
+                    if(listPatients[i].sharing[j].invitedby!=undefined){
+                        listPatients[i].sharing[j].showSwalIntro=true;
+                        console.log('-----------------------------------------');
+                        console.log(listPatients[i]._id);
+                        console.log(listPatients[i].sharing[j].email)
+
+                    }
+                  }
+                    console.log(listPatients[i].sharing)
+                    console.log('-----------------------------------------');
+                  await Patient.findByIdAndUpdate(listPatients[i]._id, { sharing: listPatients[i].sharing }, {new: true}, (err,patientUpdated) => {
+                      if(patientUpdated){
+                        console.log('updated');
+                      }else{
+                        console.log('not updated');
+                      }
+                    })
+
+                }
+
+
+              }
+              console.log("finish")
+          }
+      });
+
+  }
+
 module.exports = {
 	getDetectLanguage,
   getTranslationDictionary,
@@ -249,5 +300,6 @@ module.exports = {
   createContainerIfNotExists,
   createBlob,
   downloadBlob,
-  seeSharing
+  seeSharing,
+  setShowSwalIntro
 }

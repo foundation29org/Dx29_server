@@ -85,7 +85,7 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 			}
 			if(!found){
 				var date = Date.now();
-				patient.sharing.push({_id : userId, state: state, role: role, email: email, permissions: permissions, invitedby: ownerID, patientName: patientName, date: date, internalmessage: internalmessage});
+				patient.sharing.push({_id : userId, state: state, role: role, email: email, permissions: permissions, invitedby: ownerID, patientName: patientName, date: date, internalmessage: internalmessage, showSwalIntro: true});
 				Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err, patientUpdated) => {
 					if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 					if(patientUpdated){
@@ -558,6 +558,42 @@ function updatepermissions(req,res){
 
 }
 
+function updateshowSwalIntro(req, res){
+	let patientId = crypt.decrypt(req.params.patientId);
+	Patient.findById(patientId, (err, patient) => {
+		if (err) return res.status(500).send({message: `Error deleting the case: ${err}`})
+		if(patient){
+			var countSharing = patient.sharing.length;
+			var positionUser = 0;
+			var foundEmail = false;
+			for (var i = 0; i < patient.sharing.length && !foundEmail; i++) {
+				if(patient.sharing[i].email == req.body.email){
+					foundEmail = true;
+					patient.sharing[i].showSwalIntro = false;
+					positionUser = i;
+				}
+			}
+			if(foundEmail){
+
+				Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err,patientUpdated) => {
+					if(patientUpdated){
+						return res.status(200).send({message: 'updated showSwalIntro'})
+					}else{
+						return res.status(200).send({message: 'error'})
+					}
+				})
+
+			}else{
+				return res.status(200).send({message: 'UserId not found'})
+			}
+		}else{
+			return res.status(200).send({message: 'Patient not found'})
+		}
+	})
+
+
+}
+
 module.exports = {
 	shareOrInviteWith,
 	resendShareOrInviteWith,
@@ -566,5 +602,6 @@ module.exports = {
 	rejectpermission,
 	setPermissions,
 	getDataFromSharingAccountsListPatients,
-	updatepermissions
+	updatepermissions,
+	updateshowSwalIntro
 }
