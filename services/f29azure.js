@@ -261,23 +261,17 @@ async function createContainerIfNotExists(){
               console.log(listPatients.length)
               for(var i=0;i<listPatients.length;i++){
                 if( listPatients[i].sharing!=undefined){
-                  var found = false;
                   for (var j = 0; j < listPatients[i].sharing.length; j++) {
                     if(listPatients[i].sharing[j].invitedby!=undefined){
                         listPatients[i].sharing[j].showSwalIntro=true;
-                        console.log('-----------------------------------------');
-                        console.log(listPatients[i]._id);
-                        console.log(listPatients[i].sharing[j].email)
-
                     }
                   }
-                    console.log(listPatients[i].sharing)
-                    console.log('-----------------------------------------');
                   await Patient.findByIdAndUpdate(listPatients[i]._id, { sharing: listPatients[i].sharing }, {new: true}, (err,patientUpdated) => {
                       if(patientUpdated){
-                        console.log('updated');
+                        //console.log('updated');
                       }else{
                         console.log('not updated');
+                        console.log(listPatients[i]);
                       }
                     })
 
