@@ -399,7 +399,7 @@ function sendMailInvite (email, lang){
   return decoded
 }
 
-function sendMailShare (email, patientName, lang, internalmessage, clinicalName, message, userNameOrigin, emailOrigin, isMine){
+function sendMailShare (email, patientName, lang, internalmessage, clinicalName, message, userNameOrigin, emailOrigin, isMine, role){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -415,7 +415,7 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
 
     var mailOptions = {};
     var temp =  message.replace(/ /g,'')
-    if(isMine){
+    if(isMine && role=='User'){
       if(temp.length==0){
         mailOptions = {
           to: email,
@@ -449,6 +449,11 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
         };
       }
     }else{
+      if(lang=='es'){
+        subjectlang=userNameOrigin+ ' quiere tu opinión sobre '+ patientName;
+      }else{
+        subjectlang=userNameOrigin+ ' wants your opinion on '+ patientName;
+      }
       if(temp.length==0){
         mailOptions = {
           to: email,
