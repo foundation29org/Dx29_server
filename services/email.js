@@ -399,6 +399,10 @@ function sendMailInvite (email, lang){
   return decoded
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function sendMailShare (email, patientName, lang, internalmessage, clinicalName, message, userNameOrigin, emailOrigin, isMine, role){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
@@ -406,6 +410,9 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
     var maillistbcc = [
       TRANSPORTER_OPTIONS.auth.user
     ];
+
+    patientName= capitalizeFirstLetter(patientName);
+    userNameOrigin= capitalizeFirstLetter(userNameOrigin);
 
     var subjectlang=patientName+' needs help with their diagnosis';
 
