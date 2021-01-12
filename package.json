@@ -13,7 +13,8 @@
     "getAllPatientsNCR": "node -e \"require('./services/ncrUpdate/ncrUpdate.js').getPatientsAndUpdateEnterValuesListToUpdate()\"",
     "updateBlobgenomicsNCR": "node -e \"require('./services/ncrUpdate/ncrUpdate.js').updateBlobgenomicsStructureNCRDocURL()\"",
     "createContainerIfNotExists": "node -e \"require('./services/f29azure.js').createContainerIfNotExists()\"",
-    "seeSharing": "node -e \"require('./services/f29azure.js').seeSharing()\""
+    "seeSharing": "node -e \"require('./services/f29azure.js').seeSharing()\"",
+    "setShowSwalIntro": "node -e \"require('./services/f29azure.js').setShowSwalIntro()\""
   },
   "author": "LOA",
   "license": "MIT",

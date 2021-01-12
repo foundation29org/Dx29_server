@@ -85,7 +85,7 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 			}
 			if(!found){
 				var date = Date.now();
-				patient.sharing.push({_id : userId, state: state, role: role, email: email, permissions: permissions, invitedby: ownerID, patientName: patientName, date: date, internalmessage: internalmessage});
+				patient.sharing.push({_id : userId, state: state, role: role, email: email, permissions: permissions, invitedby: ownerID, patientName: patientName, date: date, internalmessage: internalmessage, showSwalIntro: true});
 				Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err, patientUpdated) => {
 					if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 					if(patientUpdated){
@@ -105,15 +105,15 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 							//if((!permissions.shareWithAll || permissions.askFirst)){
 								//obtener el email del propietario del caso/paciente y enviar el email solicitando permisos
 
-								User.findOne({ '_id': patientUpdated.createdBy }, function (err, user) {
+								User.findOne({ '_id': patientUpdated.createdBy }, function (err, user2) {
 									if(err) return res.status(500).send({ message: 'Error searching the user'})
-									if(user){
+									if(user2){
 										//encontrar el nombre e email del clinico que quiere compartir
 										var decryptOwnerID = crypt.decrypt(ownerID);
 										User.findById(decryptOwnerID, (err, userOwner) => {
 											if (err) return res.status(500).send({message: `Error deleting the case: ${err}`})
 											if(userOwner){
-												var patientEmail = user.email;
+												var patientEmail = user2.email;
 												var idEncyyppatid = patientId.toString();
 												var idPatientEncryp = crypt.encrypt(idEncyyppatid);
 												serviceEmail.sendMailRequestChangePermissions(email, userName, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
@@ -148,14 +148,15 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 										})
 								}else{
 									User.findOne({ 'email': email }, function (err, clinical) {
-
-										serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message)
-											.then(response => {
-												return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
-											})
-											.catch(response => {
-												return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
-											})
+										User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+											serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message, usercre.userName, usercre.email, isMine, role)
+												.then(response => {
+													return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+												})
+												.catch(response => {
+													return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+												})
+										})
 									})
 
 								}
@@ -189,12 +190,12 @@ function resendShareOrInviteWith(req, res){
 			if(err) return res.status(500).send({ message: 'Error searching the user'})
 			if(user){
 				var userRole = user.role;
-				//resendAddToMySharedList(userRole, true, email, req.body.lang, patientName, res, internalmessage)
+				//resendAddToMySharedList(userRole, true, email, req.body.lang, patientName, res, internalmessage, patientId)
 				return res.status(200).send({ message: 'There is already an account with that email'})
 				//return res.status(200).send({ message: 'There is already an account with that email'})
 			}else{
 				//enviar email a usuario
-				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage)
+				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage, patientId)
 			}
 		})
 	}else{
@@ -205,17 +206,17 @@ function resendShareOrInviteWith(req, res){
 				if(userRole=='User'){
 					res.status(200).send({ message: 'There is already an account with that email'})
 				}else{
-					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage)
+					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage, patientId)
 				}
 
 			}else{
-				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage)
+				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage, patientId)
 			}
 		})
 	}
 }
 
-function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage){
+function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage, patientId){
 	if(role=='User'){
 		serviceEmail.sendMailInvite(email, lang)
 			.then(response => {
@@ -235,12 +236,14 @@ function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res,
 					return res.status(200).send({message: 'Email cant sent'})
 				})
 		}else{
-			serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message)
-				.then(response => {
-					return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
-				})
-				.catch(response => {
-					return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+			User.findOne({ '_id': patientId }, function (err, usercre) {
+				serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, role)
+					.then(response => {
+						return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+					})
+					.catch(response => {
+						return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+					})
 				})
 		}
 	}
@@ -558,6 +561,42 @@ function updatepermissions(req,res){
 
 }
 
+function updateshowSwalIntro(req, res){
+	let patientId = crypt.decrypt(req.params.patientId);
+	Patient.findById(patientId, (err, patient) => {
+		if (err) return res.status(500).send({message: `Error deleting the case: ${err}`})
+		if(patient){
+			var countSharing = patient.sharing.length;
+			var positionUser = 0;
+			var foundEmail = false;
+			for (var i = 0; i < patient.sharing.length && !foundEmail; i++) {
+				if(patient.sharing[i].email == req.body.email){
+					foundEmail = true;
+					patient.sharing[i].showSwalIntro = false;
+					positionUser = i;
+				}
+			}
+			if(foundEmail){
+
+				Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err,patientUpdated) => {
+					if(patientUpdated){
+						return res.status(200).send({message: 'updated showSwalIntro'})
+					}else{
+						return res.status(200).send({message: 'error'})
+					}
+				})
+
+			}else{
+				return res.status(200).send({message: 'UserId not found'})
+			}
+		}else{
+			return res.status(200).send({message: 'Patient not found'})
+		}
+	})
+
+
+}
+
 module.exports = {
 	shareOrInviteWith,
 	resendShareOrInviteWith,
@@ -566,5 +605,6 @@ module.exports = {
 	rejectpermission,
 	setPermissions,
 	getDataFromSharingAccountsListPatients,
-	updatepermissions
+	updatepermissions,
+	updateshowSwalIntro
 }

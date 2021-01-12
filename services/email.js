@@ -399,7 +399,11 @@ function sendMailInvite (email, lang){
   return decoded
 }
 
-function sendMailShare (email, patientName, lang, internalmessage, clinicalName, message){
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function sendMailShare (email, patientName, lang, internalmessage, clinicalName, message, userNameOrigin, emailOrigin, isMine, role){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -407,27 +411,91 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
       TRANSPORTER_OPTIONS.auth.user
     ];
 
-    var subjectlang='Dx29 - A patient is inviting you to work their case on Dx29';
+    patientName= capitalizeFirstLetter(patientName);
+    userNameOrigin= capitalizeFirstLetter(userNameOrigin);
+
+    var subjectlang=patientName+' needs help with their diagnosis';
 
     if(lang=='es'){
-      subjectlang='Dx29 - Un paciente le invita a trabajar en su caso en Dx29';
-    }else if(lang=='nl'){
-      subjectlang='Dx29 - Een patiënt nodigt u uit om hun zaak te werken aan Dx29';
+      subjectlang=patientName+ ' necesita ayuda con su diagnóstico';
     }
 
-    var mailOptions = {
-      to: email,
-      from: TRANSPORTER_OPTIONS.auth.user,
-      bcc: maillistbcc,
-      subject: subjectlang,
-      template: 'share/_'+lang,
-      context: {
-        client_server : client_server,
-        patientName: patientName,
-        urlImg: urlImg,
-        message: message
+    var mailOptions = {};
+    var temp =  message.replace(/ /g,'')
+    if(role=='User'){
+      if(temp.length==0){
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'share/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            urlImg: urlImg,
+            userNameOrigin: userNameOrigin,
+            emailOrigin: emailOrigin
+          }
+        };
+      }else{
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'sharewithmsg/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            urlImg: urlImg,
+            message: message,
+            userNameOrigin: userNameOrigin,
+            emailOrigin: emailOrigin
+          }
+        };
       }
-    };
+    }else{
+      if(lang=='es'){
+        subjectlang=userNameOrigin+ ' quiere tu opinión sobre '+ patientName;
+      }else{
+        subjectlang=userNameOrigin+ ' wants your opinion on '+ patientName;
+      }
+      if(temp.length==0){
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'clinicianshare/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            urlImg: urlImg,
+            userNameOrigin: userNameOrigin,
+            emailOrigin: emailOrigin
+          }
+        };
+      }else{
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'cliniciansharewithmsg/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            urlImg: urlImg,
+            message: message,
+            userNameOrigin: userNameOrigin,
+            emailOrigin: emailOrigin
+          }
+        };
+      }
+    }
+
+
 
     if(internalmessage=='Request genetic test'){
       //Solicitud de test genetico por parte del paciente a un clínico que ya existe (caso 2)

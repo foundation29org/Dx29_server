@@ -58,7 +58,7 @@ function activateUser(req, res){
 																//update sharing, for clinician
 																var date = Date.now();
 																var permissions = {"shareEmr" : true,"askFirst" : false, "shareWithAll" : false};
-																patientUpdated.sharing.push({_id : userIdCreatedBy, state: '', role: 'Clinical', email: clinicalUser.email, permissions: permissions, invitedby: userIdCreatedBy, patientName: patientUpdated.patientName, date: date});
+																patientUpdated.sharing.push({_id : userIdCreatedBy, state: '', role: 'Clinical', email: clinicalUser.email, permissions: permissions, invitedby: userIdCreatedBy, patientName: patientUpdated.patientName, date: date, showSwalIntro: true});
 																Patient.findByIdAndUpdate(patientId, { sharing: patientUpdated.sharing }, {new: true}, (err, patientUpdated) => {
 																	//enviar un email avisando?
 																})

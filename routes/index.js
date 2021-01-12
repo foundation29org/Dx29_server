@@ -185,6 +185,7 @@ api.post('/rejectpermission/:patientId', auth, shareOrInviteCtrl.rejectpermissio
 api.post('/setpermission/:patientId', auth, shareOrInviteCtrl.setPermissions)
 api.post('/sharingaccountsclinical/:userId', auth, shareOrInviteCtrl.getDataFromSharingAccountsListPatients)
 api.post('/updatepermissions/', shareOrInviteCtrl.updatepermissions)
+api.post('/updateshowSwalIntro/:patientId', auth, shareOrInviteCtrl.updateshowSwalIntro)
 
 api.get('/testservicemonarch', testServiceMonarchCtrl.testMonarchService)
 api.post('/testservicemonarch/:userId', auth, testServiceMonarchCtrl.saveUserToNotifyMonarch)
