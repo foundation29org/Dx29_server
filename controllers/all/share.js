@@ -149,7 +149,7 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 								}else{
 									User.findOne({ 'email': email }, function (err, clinical) {
 										User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
-											serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message, usercre.userName, usercre.email, isMine, usercre.role)
+											serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message, usercre.userName, usercre.email, isMine, role)
 												.then(response => {
 													return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
 												})
@@ -237,7 +237,7 @@ function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res,
 				})
 		}else{
 			User.findOne({ '_id': patientId }, function (err, usercre) {
-				serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, usercre.role)
+				serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, role)
 					.then(response => {
 						return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
 					})

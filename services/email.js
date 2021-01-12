@@ -415,7 +415,7 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
 
     var mailOptions = {};
     var temp =  message.replace(/ /g,'')
-    if(isMine && role=='User'){
+    if(role=='User'){
       if(temp.length==0){
         mailOptions = {
           to: email,
