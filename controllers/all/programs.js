@@ -821,6 +821,8 @@ function getProgramsRequestsAndStatus(req,res){
 
 						for(var j=0;j<programList[i].externalRequests.length;j++){
 							var applicationId=programList[i].externalRequests[j].idRequest
+							var patientName=programList[i].externalRequests[j].patientName
+							var patientlastName=programList[i].externalRequests[j].patientlastName
 							var birthDate=programList[i].externalRequests[j].birthDate
 							var gender=programList[i].externalRequests[j].gender
 							var ges=programList[i].externalRequests[j].GES
@@ -832,7 +834,7 @@ function getProgramsRequestsAndStatus(req,res){
 							var date=programList[i].externalRequests[j].date
 							var status=programList[i].externalRequests[j].status
 							var applicationStatus="externalRequests";
-							result.push({patientFound:false,data:{applicationId:applicationId, date:date, birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
+							result.push({patientFound:false,data:{applicationId:applicationId, date:date, patientName:patientName, patientlastName:patientlastName, birthDate:birthDate,gender:gender,ges:ges,developmentalDelay:developmentalDelay,
 								userName:userName,lastName:lastName,phone:phone,email:email, applicationStatus:applicationStatus, status: status}})
 						}
 
@@ -1215,8 +1217,12 @@ function externalRequest (req,res){
 										res.status(200).send({ message: 'Email sent'})
 									})
 									.catch(response => {
-										//create user, but Failed sending email.
-										//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
+										var dataInfo = {email: req.body.form.email, lang: req.body.lang, randomIdRequest: randomIdRequest, userName: req.body.form.userName};
+										serviceEmail.sendMailErrorEmail(dataInfo, 'Together towards the diagnosis '+' [ID: '+randomIdRequest+']')
+											.then(response => {
+											})
+											.catch(response => {
+											})
 										res.status(200).send({ message: 'Fail sending email'})
 									})
 							}else{
@@ -1225,8 +1231,12 @@ function externalRequest (req,res){
 										res.status(200).send({ message: 'Email sent'})
 									})
 									.catch(response => {
-										//create user, but Failed sending email.
-										//res.status(200).send({ token: serviceAuth.createToken(user),  message: 'Fail sending email'})
+										var dataInfo = {email: req.body.form.email, lang: req.body.lang, randomIdRequest: randomIdRequest, userName: req.body.form.userName};
+										serviceEmail.sendMailErrorEmail(dataInfo, 'Together towards the diagnosis '+' [ID: '+randomIdRequest+']')
+											.then(response => {
+											})
+											.catch(response => {
+											})
 										res.status(200).send({ message: 'Fail sending email'})
 									})
 							}
