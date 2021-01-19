@@ -946,6 +946,38 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
   return decoded
 }
 
+function sendMailErrorEmail (data, msg){
+
+  const decoded = new Promise((resolve, reject) => {
+
+    var mydata = JSON.stringify(data);
+    var mailOptions = {
+      to: TRANSPORTER_OPTIONS.auth.user,
+      from: TRANSPORTER_OPTIONS.auth.user,
+      subject: 'Error sending email: '+ msg,
+      template: 'error_send_email/_en',
+      context: {
+        mydata : mydata
+      }
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        console.log('Email sent: ' + info.response);
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -963,5 +995,6 @@ module.exports = {
   sendMailProgramRequestToPatient,
   sendMailProgramRequestToClinician,
   sendMail_request_genetic_program_patient,
-  sendMail_request_genetic_program_clinician
+  sendMail_request_genetic_program_clinician,
+  sendMailErrorEmail
 }
