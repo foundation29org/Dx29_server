@@ -19,13 +19,11 @@ function observerProcessExomizer (req, res){
   serviceBusClient.createSubscription(exomiser_topic, patientId,
     function (error) {
         if (error) {
-          console.log('error 1');
             console.log(error);
             checkForMessages(serviceBusClient, patientId, res);
         }
         else
         {
-            console.log('Subscriber '+ patientId+ ' registered for exomisertopic messages');
             checkForMessages(serviceBusClient, patientId, res);
 
         }
@@ -33,13 +31,11 @@ function observerProcessExomizer (req, res){
 }
 // Not in use
 function checkForMessages(serviceBusClient, patientId, res) {
-  console.log('checkForMessages');
   var start = new Date()
   var send = false;
   var sent = false;
   var timer = setInterval( function(){
     var end = new Date() - start;
-    console.log(end);
     if(end>60000){
       if(!send){
         send = true;
@@ -52,7 +48,6 @@ function checkForMessages(serviceBusClient, patientId, res) {
         if(!sent){
           if (err) {
             if (err === 'No messages to receive') {
-              console.log('No messages');
               if(send){
                 sent = true;
                 res.status(202).send({message: 'timeout'})
@@ -74,7 +69,6 @@ function checkForMessages(serviceBusClient, patientId, res) {
     						})
             }
           }else{
-            console.log('Rx: ', lockedMessage);
             if(timer!=undefined){
               clearInterval(timer);
             }
@@ -128,12 +122,10 @@ function testProcessExomizer (req, res){
   serviceBusClient.getSubscription(exomiser_topic, patientId,
     function (error) {
         if (error) {
-          console.log( patientId +' NO subscriber ');
           res.status(202).send({message: 'nothing pending'})
         }
         else
         {
-            console.log('Subscriber '+ patientId);
             res.status(202).send({message: 'something pending'})
         }
     });
@@ -150,13 +142,11 @@ function cancelProcessExomizer (req, res){
         try{
           res.status(202).send({message: 'The subscription does not exist'})
         }catch(ex){
-          //console.log(ex);
         }
     }
     try{
       res.status(202).send({message: 'The subscription has been eliminated.'})
     }catch(ex){
-      //console.log(ex);
     }
 
   });
@@ -165,9 +155,7 @@ function cancelProcessExomizer (req, res){
 
 function moveCorruptedVCFsBlobgenomics(req,res){
   let patientId= crypt.decrypt(req.params.patientId);
-  console.log(req.body)
   let filename = req.body.filename;
-  console.log(filename)
   if(filename.indexOf("vcf/")!=-1){
     var containerName=crypt.encrypt(patientId).substr(1).toString();
     var filenameSplit = filename.split("vcf/");
@@ -194,7 +182,6 @@ function moveCorruptedVCFsBlobgenomics(req,res){
                   if (error != null) {
                     console.log(error);
                   } else {
-                    console.log("Deleted OK!")
                     return res.status(200).send({message: 'VCF move to vcf_error/ ok'})
                   }
                 })

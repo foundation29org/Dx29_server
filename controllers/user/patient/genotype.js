@@ -50,7 +50,6 @@ const crypt = require('../../../services/crypt')
 
 function getGenotype (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
-	console.log(patientId);
 	Genotype.findOne({"createdBy": patientId}, {"createdBy" : false }, (err, genotype) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 		if(!genotype) return res.status(202).send({message: 'There are no genotype'})

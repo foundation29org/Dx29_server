@@ -76,15 +76,12 @@ function getAzureBlobSasTokenWithContainer (req, res){
       version:"2017-11-09"
 
     },sharedKeyCredentialGenomics).toString();
-    console.log(containerSAS);
   res.status(200).send({containerSAS: containerSAS})
 }
 
 async function deleteContainers (containerName){
   const containerClient = await blobServiceClientGenomics.getContainerClient(containerName);
   containerClient.delete();
-  console.log(`Container deleted ${containerName} successfully`);
-
 }
 
  async function createContainers (containerName){
@@ -93,10 +90,8 @@ async function deleteContainers (containerName){
 
   const createContainerResponse = await containerClient.createIfNotExists();
   if(createContainerResponse.succeeded){
-    console.log(`Create container ${containerName} successfully`);
     return true;
   }else{
-    console.log(`Create container ${containerName} failed`);
     return false;
   }
 
@@ -108,26 +103,20 @@ async function createContainerIfNotExists(){
     await User.find({platform : "Dx29"},async (err, users) => {
         if (err) return res.status(500).send({message: `Error making the request: ${err}`})
         if(users){
-            console.log("Get users")
             for(var i = 0; i < users.length; i++) {
                 await Patient.find({createdBy:users[i]._id},(err,patientsFound)=>{
                     if (err) return res.status(500).send({message: `Error making the request: ${err}`})
                     if(patientsFound.length>0){
-                        console.log("Patient found")
                         for(var j=0;j<patientsFound.length;j++){
                          listPatients.push((patientsFound[j]._id).toString())
                         }
                     }
                 })
             }
-            console.log("Write output")
-            console.log(listPatients)
             for(var i=0;i<listPatients.length;i++){
                 var containerName=crypt.encrypt(listPatients[i]).substr(1).toString();
                 var result = await createContainers(containerName);
                 if(!result){
-                  console.log(listPatients[i]);
-                  console.log(result);
                 }
 
             }
@@ -142,7 +131,6 @@ async function createContainerIfNotExists(){
     var fileNameToSave=algorithmName+'/'+date+'/'+fileName
     const blockBlobClient = containerClient.getBlockBlobClient(fileNameToSave);
     const uploadBlobResponse = await blockBlobClient.upload(content, content.length);
-    console.log(`Upload block blob ${fileNameToSave} successfully`, uploadBlobResponse.requestId);
   }
 
   async function downloadBlob(containerName, blobName){
@@ -175,20 +163,16 @@ async function createContainerIfNotExists(){
       await User.find({platform : "Dx29"},async (err, users) => {
           if (err) return res.status(500).send({message: `Error making the request: ${err}`})
           if(users){
-              console.log("Get users")
               for(var i = 0; i < users.length; i++) {
                   await Patient.find({createdBy:users[i]._id},(err,patientsFound)=>{
                       if (err) return res.status(500).send({message: `Error making the request: ${err}`})
                       if(patientsFound.length>0){
-                          //console.log("Patient found")
                           for(var j=0;j<patientsFound.length;j++){
                            listPatients.push(patientsFound[j])
                           }
                       }
                   })
               }
-              console.log("Write output")
-              console.log(listPatients.length)
               var counbt = 0;
               for(var i=0;i<listPatients.length;i++){
                 if( listPatients[i].sharing!=undefined){
@@ -198,12 +182,6 @@ async function createContainerIfNotExists(){
                       var tempo =listPatients[i].sharing[j].patientid.toString()
                       var resu2 = crypt.decrypt(tempo);
                       if(resu2!=listPatients[i]._id){
-
-                        console.log('-----------------------------------------');
-                        console.log(listPatients[i]._id);
-                        console.log(resu2);
-                        console.log(listPatients[i].sharing[j].email)
-
                         counbt++;
                         found = true;
                         listPatients[i].sharing[j] = null;
@@ -218,14 +196,9 @@ async function createContainerIfNotExists(){
             	          copySharing.push(listPatients[i].sharing[ik]);
             	        }
             	      }
-                    console.log(listPatients[i].sharing)
-                    console.log(copySharing)
-                    console.log('-----------------------------------------');
                   await Patient.findByIdAndUpdate(listPatients[i]._id, { sharing: copySharing }, {new: true}, (err,patientUpdated) => {
             					if(patientUpdated){
-            						console.log('updated');
             					}else{
-            					  console.log('not updated');
             					}
             				})
                   }
@@ -233,8 +206,6 @@ async function createContainerIfNotExists(){
 
 
               }
-              console.log(counbt);
-              console.log("finish")
           }
       });
 
@@ -245,20 +216,16 @@ async function createContainerIfNotExists(){
       await User.find({platform : "Dx29"},async (err, users) => {
           if (err) return res.status(500).send({message: `Error making the request: ${err}`})
           if(users){
-              console.log("Get users")
               for(var i = 0; i < users.length; i++) {
                   await Patient.find({createdBy:users[i]._id},(err,patientsFound)=>{
                       if (err) return res.status(500).send({message: `Error making the request: ${err}`})
                       if(patientsFound.length>0){
-                          //console.log("Patient found")
                           for(var j=0;j<patientsFound.length;j++){
                            listPatients.push(patientsFound[j])
                           }
                       }
                   })
               }
-              console.log("Write output")
-              console.log(listPatients.length)
               for(var i=0;i<listPatients.length;i++){
                 if( listPatients[i].sharing!=undefined){
                   for (var j = 0; j < listPatients[i].sharing.length; j++) {
@@ -268,10 +235,7 @@ async function createContainerIfNotExists(){
                   }
                   await Patient.findByIdAndUpdate(listPatients[i]._id, { sharing: listPatients[i].sharing }, {new: true}, (err,patientUpdated) => {
                       if(patientUpdated){
-                        //console.log('updated');
                       }else{
-                        console.log('not updated');
-                        console.log(listPatients[i]);
                       }
                     })
 
@@ -279,7 +243,6 @@ async function createContainerIfNotExists(){
 
 
               }
-              console.log("finish")
           }
       });
 

@@ -126,7 +126,6 @@ async function checkPatientSymptoms(listPatientSymptoms,listSymptomsToCompare,li
 					}
 
 				})
-				//console.log(childFoundInPatient)
 				childFoundInPatient.forEach(boolean=>{
 					if(boolean==false){
 						patientContainsSuccesorsFromSymptomsToCompare=false;
@@ -331,7 +330,6 @@ async function checkPrograms(req,res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	var resultPrograms = [];
 	var programList = await getPrograms();
-	console.log(programList);
 	if(programList!=undefined){
 		const getResults = async() =>{
 			await asyncForEach(programList,async (program)=>{
@@ -474,7 +472,6 @@ function programRequest (req,res){
 						var result = "Jhon";
 						if(user){
 							result = user.email;
-							console.log('vamos a mandar email');
 							serviceEmail.sendMail_request_genetic_program_patient(result, req.body.clinicalEmail, langClinician, req.body.patientId, false, randomIdRequest)
 								.then(response => {
 
@@ -511,7 +508,6 @@ function programRequest (req,res){
 }
 
 function continueWithRequest (req,res, needSendEmail, program){
-	console.log(req.params.programId);
 	let programId = crypt.decrypt(req.params.programId);
 		if(program){
 			var positionUser = 0;
@@ -627,7 +623,6 @@ function alphanumeric_unique(program) {
 */
 
 function updatePatientData(data, res, needSendEmail){
-	console.log(data);
 	var patientId = crypt.decrypt(data.patientId);
 	Patient.findById(patientId, (err, patient) => {
 		if (err) return res.status(500).send({message: `Error updating the patient: ${err}`})
@@ -1179,7 +1174,6 @@ function deleteEntryInPrograms(req,res){
 }
 
 function externalRequest (req,res){
-	console.log(req.body);
 
 	Programs.findOne({name:req.body.programName}, function(err, program) {
 		if(err){

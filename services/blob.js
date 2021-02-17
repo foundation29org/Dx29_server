@@ -31,9 +31,7 @@ function getToken(containerName){
       version:"2017-11-09"
 
 	},sharedKeyCredentialGenomics).toString();
-	//console.log(containerSAS);
 	return containerSAS;
-	//res.status(200).send({containerSAS: containerSAS})
 }
 
 function getMedicalReports (patientIdCrypt){
@@ -152,12 +150,10 @@ function checkBlobInfo(containerName,blobName){
 		blobService.getBlobToText(containerName, blobName, {'disableContentMD5Validation': true },function(error, text){
 			if(error){
 				console.error(error);
-				//res.status(500).send('Fail to download blob');
 				resolve({result:null,data:["Error reading container data"]});
 
 			} else {
 			   	var data = JSON.parse(text);
-			   	//console.log(data.docUrl)
 				if((data.docUrl!="")&&(data.docUrl!=undefined)&&(data.docUrl!=null)){
 					var url=config.blobAccessToken.blobAccountUrl+containerName+'/'+data.docUrl+"?"+token;
 					resolve({result:true,data:{name:data.docUrl,url:url}});
@@ -179,12 +175,10 @@ function checkBlobInfoAndData(containerName,blobName){
 		blobService.getBlobToText(containerName, blobName, {'disableContentMD5Validation': true },function(error, text){
 			if(error){
 				console.error(error);
-				//res.status(500).send('Fail to download blob');
 				resolve({result:null,url:"",data:["Error reading container data"]});
 
 			} else {
 			   	var data = JSON.parse(text);
-			   	//console.log(data.docUrl)
 				if((data.docUrl!="")&&(data.docUrl!=undefined)&&(data.docUrl!=null)){
 					var url=config.blobAccessToken.blobAccountUrl+containerName+'/'+data.docUrl+"?"+token;
 					resolve({result:true,url:url,data:data});

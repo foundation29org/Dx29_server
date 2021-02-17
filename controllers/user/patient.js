@@ -285,7 +285,6 @@ function savePatient (req, res){
   		if (err) return res.status(500).send({message: `Error deleting the patient: ${err}`})
   		if(patient){
   			patient.remove(err => {
-          console.log(`The patient has been eliminated`);
   				savePatient(req, res)
   			})
   		}else{
@@ -365,13 +364,11 @@ function updatePatient (req, res){
 
   Patient.findByIdAndUpdate(patientId, { gender: req.body.gender, birthDate: req.body.birthDate, patientName: req.body.patientName, relationship: req.body.relationship, country: req.body.country, previousDiagnosis: req.body.previousDiagnosis, avatar: avatar }, {new: true}, async (err,patientUpdated) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
-    console.log(patientUpdated);
 		var id = patientUpdated._id.toString();
 		var idencrypt= crypt.encrypt(id);
 		var patientInfo = {sub:idencrypt, patientName: patientUpdated.patientName, surname: patientUpdated.surname, birthDate: patientUpdated.birthDate, gender: patientUpdated.gender, country: patientUpdated.country, previousDiagnosis: patientUpdated.previousDiagnosis, avatar: patientUpdated.avatar};
 		let containerName = (idencrypt).substr(1);
 		var result = await f29azureService.createContainers(containerName);
-		console.log(result);
 		res.status(200).send({message: 'Patient updated', patientInfo})
 
 	})
@@ -471,7 +468,6 @@ function getActualStep (req, res){
 function setActualStep (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
 	var actualStep = req.body.actualStep;
-	console.log(actualStep);
 	Patient.findByIdAndUpdate(patientId, {actualStep: actualStep }, {new: true}, (err,patientUpdated) => {
 		if(patientUpdated){
 		return res.status(200).send({message: 'Updated'})
@@ -525,15 +521,11 @@ function getPendingJobs (req, res){
 
 function setPendingJobs (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
-	console.log(req.body)
 	var pendingJob = req.body.pendingJob;
 	var update;
 	if(req.body.pendingJobType=="exomiser"){
 		update = {$push:{"status.pendingJobs.exomiser":pendingJob}}
 	}
-	console.log("set pending job")
-	console.log(pendingJob);
-	console.log(update)
 	Patient.findByIdAndUpdate(patientId, update, {safe: true, upsert: true}, (err,patientUpdated) => {
 		if(patientUpdated){
 			return res.status(200).send({message: 'Updated'})
@@ -550,7 +542,6 @@ function deletePendingJob (req, res){
 	if(req.body.pendingJobType=="exomiser"){
 		update = {$pull:{"status.pendingJobs.exomiser":pendingJob}}
 	}
-	console.log(pendingJob);
 	Patient.findByIdAndUpdate(patientId, update, { 'multi': true }, (err,patientUpdated) => {
 		if(patientUpdated){
 			return res.status(200).send({message: 'Deleted'})

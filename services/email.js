@@ -82,7 +82,6 @@ function sendMailVerifyEmail (email, randomstring, lang, group){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -132,7 +131,6 @@ function sendMailRecoverPass (email, randomstring, lang){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -170,7 +168,6 @@ function sendMailRequestNewLanguage (user, name, code){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -212,7 +209,6 @@ function sendMailRequestNewTranslation (user, lang, jsonData){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -257,7 +253,6 @@ function sendMailSupport (email, lang, role, supportStored){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -290,7 +285,6 @@ function sendMailErrorFromServer (patient, msg, service){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -318,7 +312,6 @@ function sendMailMonarchIsActive (emails){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -345,7 +338,6 @@ function sendMailMonarchIsInactive (){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -390,7 +382,6 @@ function sendMailInvite (email, lang){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -528,7 +519,6 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -593,7 +583,6 @@ function sendMailNewClinicialShare (email, patientName, lang, internalmessage, m
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -615,14 +604,6 @@ function sendMailRequestChangePermissions (email, userName, lang, patientEmail, 
     if(lang=='es'){
       subjectlang='Dx29 - Solicitud de compartición de datos';
     }
-    console.log(patientEmail)
-    console.log(email)
-    console.log(userName)
-    console.log(lang)
-    console.log(message)
-    console.log(ownerUserName)
-    console.log(owneremail)
-    console.log(patientId)
 
     var mailOptions = {
       to: patientEmail,
@@ -653,7 +634,6 @@ function sendMailRequestChangePermissions (email, userName, lang, patientEmail, 
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -714,7 +694,6 @@ function sendEmailInfoPermissions (patientEmail, emailorigen, email, state, lang
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -761,7 +740,6 @@ function sendMailProgramRequestToPatient (patientEmail, clinicalEmail, lang){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -808,7 +786,6 @@ function sendMailProgramRequestToClinician (patientEmail, clinicalEmail, lang){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -885,7 +862,6 @@ function sendMail_request_genetic_program_patient (email, clinicalEmail, lang, p
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -937,7 +913,6 @@ function sendMail_request_genetic_program_clinician (email, clinicalEmail, lang,
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
@@ -969,7 +944,6 @@ function sendMailErrorEmail (data, msg){
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });
