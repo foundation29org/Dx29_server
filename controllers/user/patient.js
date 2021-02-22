@@ -74,7 +74,7 @@ function getPatientsUser (req, res){
 				// if the two objects are the same, the previous line can be set as follows
 				res.status(200).send({listpatients})
 			})
-		}else if(user.role == 'Clinical' || user.role == 'SuperAdmin' || user.role == 'Lab'|| user.role == 'Admin'){
+		}else if(user.role == 'Clinical' || user.role == 'SuperAdmin' || user.role == 'Admin'){
 
 			//debería de coger los patientes creados por ellos, más adelante, habrá que meter tb los pacientes que les hayan datos permisos
 			Patient.find({"createdBy": userId},(err, patients) => {

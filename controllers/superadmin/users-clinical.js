@@ -10,7 +10,7 @@ const Diagnosis = require('../../models/diagnosis')
 
 
 function getUsers (req, res){
-	User.find({role: {$in: ['Clinical', 'Lab']}},(err, users) => {
+	User.find({role: {$in: ['Clinical']}},(err, users) => {
 		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 
 		var listUsers = [];

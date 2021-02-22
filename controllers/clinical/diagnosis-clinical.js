@@ -19,7 +19,7 @@ function getPatientsInfo (req, res){
 		if (err) return res.status(500).send({message: 'Error making the request:'})
 		if(!user) return res.status(404).send({code: 208, message: 'The user does not exist'})
 
-		if(user.role == 'Clinical' || user.role == 'User' || user.role == 'Lab'){
+		if(user.role == 'Clinical' || user.role == 'User'){
 
 			//debería de coger los patientes creados por ellos, más adelante, habrá que meter tb los pacientes que les hayan datos permisos
 			Patient.find({"createdBy": userId},(err, patients) => {
@@ -48,7 +48,7 @@ function getSharedPatientsInfo (req, res){
 		if (err) return res.status(500).send({message: 'Error making the request:'})
 		if(!user) return res.status(404).send({code: 208, message: 'The user does not exist'})
 
-		if(user.role == 'Clinical' || user.role == 'User' || user.role == 'Lab'){
+		if(user.role == 'Clinical' || user.role == 'User'){
 			//Patient.find({"sharing": { $ne: [], $ne: null }}, (err, patients) => {
 			Patient.find({ 'sharing.email': user.email }, (err, patients) => {
 				listpatients = [];
