@@ -211,30 +211,6 @@ function savePhenotype (req, res){
  *
  */
 
-/*function updatePhenotype (req, res){
-	let phenotypeId= req.params.phenotypeId;
-	let update = req.body
-	console.log(update);
-	Phenotype.findByIdAndUpdate(phenotypeId, update, { new: true}, (err,phenotypeUpdated) => { //Phenotype.findByIdAndUpdate(phenotypeId, update, {select: '-createdBy', new: true}, (err,phenotypeUpdated) => {
-		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
-		if (!phenotypeUpdated) return res.status(500).send({message: 'not found'})
-		//save in PhenotypeHistory
-		Phenotype.findByIdAndUpdate(phenotypeId, update, {new: true}, (err,phenotypeCreatedBy) => {
-			if (err) return res.status(500).send({message: `Error making the request: ${err}`})
-			let phenotypeHistory = new PhenotypeHistory()
-			phenotypeHistory.data = req.body.data
-			phenotypeHistory.createdBy = phenotypeCreatedBy.createdBy
-			phenotypeHistory.validated = phenotypeUpdated.validated
-			phenotypeHistory.validator_id = phenotypeUpdated.validator_id
-			phenotypeHistory.save((err, phenotypeHistoryStored) => {
-			})
-		})
-
-		res.status(200).send({message: 'Phenotype updated', phenotype: phenotypeUpdated})
-
-	})
-}*/
-
 function updatePhenotype (req, res){
 	let phenotypeId= req.params.phenotypeId;
 	let update = req.body
@@ -299,7 +275,6 @@ function getRelatedConditions(req, res){
 		//hposStrins+= '&id=';
 	});
 
-	console.log('https://api.monarchinitiative.org/api/sim/search?is_feature_set=true&metric=phenodigm'+hposStrins+'&limit='+limit+'&taxon=9606');
 	request({
   //url: 'https://monarchinitiative.org/analyze/phenotype.json?input_items='+hposStrins+'&limit=100&target_species=human',
 	url: 'https://api.monarchinitiative.org/api/sim/search?is_feature_set=true&metric=phenodigm'+hposStrins+'&limit='+limit+'&taxon=9606',
@@ -308,24 +283,16 @@ function getRelatedConditions(req, res){
 		if(error){
 			return res.status(500).send({message: `Error monarch: ${error}`})
 		}else{
-			console.log(body.matches);
 			if(body.matches!=undefined){
 				var result = [];
-				console.log(body.matches.length);
 				for(var i = 0; i < body.matches.length; i++) { //data.results.length
 					if(body.matches[i]!=undefined){
-						//console.log(body.results[i]);
-						//result.push({"name":body.matches[i].j, "score": body.matches[i].combinedScore, "matches": body.matches[i].matches});
 						result.push({"name":{label: body.matches[i].label, id: body.matches[i].id} , "score": body.matches[i].score, "matches": body.matches[i].pairwise_match});
-            //result.push({"name":{label: body.matches[i].label, id: body.matches[i].id} , "score": body.matches[i].score});
 					}
 				}
 				return res.status(202).send({diseases: result})
 			}
 		}
-		/*else{
-			return res.status(500).send({message: `Error monarch: ${error}`})
-		}*/
 
 	});
 
@@ -350,7 +317,6 @@ function getSymptomsOfDisease (req, res){
             //result[patientIdEncrypt] = [];
           }else{
 			if(phenotype.permissions[0]!=undefined){
-				console.log(phenotype.permissions[0])
 				if(phenotype.data.length>0 && phenotype.permissions[0].shareWithCommunity){
 					var obj = phenotype.data;
 					var listSymptoms = [];
@@ -380,7 +346,6 @@ function getSymptomsOfDisease (req, res){
 
 function setShareWithCommunity (req, res){
   let phenotypeId=req.params.phenotypeId;
-  console.log(req.body);
   Phenotype.findByIdAndUpdate(phenotypeId, { permissions: req.body }, (err,patientUpdated) => {
     if (err) return res.status(500).send({message: `Error making the request: ${err}`})
       res.status(200).send({message: 'case name changed'})
