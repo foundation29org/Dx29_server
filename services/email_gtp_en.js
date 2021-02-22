@@ -63,7 +63,6 @@ function sendMail_request_genetic_program_external_patient (email, lang, randomI
           message: 'Fail sending email'
         })
       } else {
-        console.log('Email sent: ' + info.response);
         resolve("ok")
       }
     });

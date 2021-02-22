@@ -31,7 +31,7 @@ const UserSchema = Schema({
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
 	password: { type: String, select: false, required: true, minlength: [8,'Password too short']},
-	role: { type: String, required: true, enum: ['SuperAdmin', 'Admin', 'User', 'Clinical', 'Lab'], default: 'User'},
+	role: { type: String, required: true, enum: ['SuperAdmin', 'Admin', 'User', 'Clinical'], default: 'User'},
 	subrole: String,
 	group: { type: String, required: true, default: 'None'},
 	confirmed: {type: Boolean, default: false},

@@ -448,7 +448,6 @@ function sendEmail (req, res){
 		if (err) return res.status(500).send({ message: `Error finding the user: ${err}`})
 		if(user){
 			if(req.body.type == "resendEmail"){
-				console.log(user)
 				serviceEmail.sendMailVerifyEmail(req.body.email, randomstring, req.body.lang, user.group)
 					.then(response => {
 						res.status(200).send({ message: 'Email resent'})
@@ -501,10 +500,8 @@ function signUp(req, res){
 				if (err) return res.status(500).send({ message: `Error creating the user: ${err}`})
 
 				if(req.body.patientId != undefined){
-					console.log(req.body.patientId)
 					var tempo = req.body.patientId
 					let patientIdt = crypt.decrypt(tempo)
-					console.log(patientIdt)
 					//let patientId= crypt.decrypt(req.params.patientId);
 
 					Patient.findById(patientIdt, {"createdBy" : false }, (err, patient) => {
@@ -873,7 +870,6 @@ function getShowIntroWizard (req, res){
 function setShowIntroWizard (req, res){
 	let userId= crypt.decrypt(req.params.userId);
 	var showIntroWizard = req.body.showIntroWizard;
-	console.log(showIntroWizard);
 	User.findByIdAndUpdate(userId, {showIntroWizard: showIntroWizard }, {new: true}, (err,userUpdated) => {
 		if(userUpdated){
 		return res.status(200).send({message: 'Updated', showIntroWizard: req.body.showIntroWizard})

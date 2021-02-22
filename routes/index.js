@@ -4,7 +4,6 @@
 const express = require('express')
 
 const userCtrl = require('../controllers/all/user')
-const labCtrl = require('../controllers/all/lab')
 const langCtrl = require('../controllers/all/lang')
 
 const patientCtrl = require('../controllers/user/patient')
@@ -164,10 +163,6 @@ api.get('/sharedcase/:userId', auth, diagnosisCasesCtrl.getSharedPatientsInfo)
 api.delete('/case/:patientId', auth, diagnosisCasesCtrl.deleteCase)
 api.get('/case/archive/:patientId', auth, diagnosisCasesCtrl.setCaseArchived)
 api.get('/case/restore/:patientId', auth, diagnosisCasesCtrl.setCaseRestored)
-
-//lab
-api.get('/lab/', labCtrl.getLabsNames)
-api.post('/lab/:labName', labCtrl.saveLab)
 
 //Support
 api.post('/support/', supportCtrl.sendMsgSupport)

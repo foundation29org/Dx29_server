@@ -44,7 +44,6 @@ function updateLangFile (req, res){
 		if(!user) return res.status(404).send({code: 208, message: 'The user does not exist'})
 
 		if(user.role == 'SuperAdmin'){
-			console.log(req.body);
 			let body = req.body;
 			let cont = 0;
 			for (var i = 0; i < body.length; i++) {
@@ -112,7 +111,6 @@ async function processObj(obj, code, name, res){
 		//this.keyslevel2.push(Object.keys(res.jsonData[tempo]));
 	}
 
-	console.log('write file');
 	//subir file
 	fs.writeFile('./dist/assets/i18n/'+code+'.json', JSON.stringify(result.data), (err) => {
 		if (err) {
@@ -135,7 +133,6 @@ async function processObj(obj, code, name, res){
 
 
 async function processObj2(obj2, keys, keysLevel2, i, code){
-	//console.log(keysLevel2);
 	var supported = true;
 	for (var j = 0; j < keysLevel2.length && supported; j++) {
 		if(keysLevel2[j] !== 'listqna'){
@@ -159,7 +156,6 @@ async function processObj2(obj2, keys, keysLevel2, i, code){
 
 
 async function processObj3(obj3, keys, keysLevel2, keysLevel3, i, j, code){
-	//console.log(keysLevel2);
 	for (var k = 0; k < keysLevel3.length; k++) {
 			await translate(obj3[keys[i]][keysLevel2[j]][keysLevel3[k]], {from: 'en', to: code }).then(res => {
 					obj3[keys[i]][keysLevel2[j]][keysLevel3[k]]= res.text;
