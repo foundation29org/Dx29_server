@@ -4,8 +4,6 @@ const crypt = require('./crypt')
 const config = require('../config')
 const request = require('request')
 
-const User = require('../models/user')
-
 function getAnnotate_batch (req, res){
 
   var segments = req.body;
@@ -24,21 +22,6 @@ function getAnnotate_batch (req, res){
   });
 }
 
-
-async function changeRol (req, res){
-  await User.find({ role: 'Lab' }, async (err, users) => {
-    for(var i = 0; i < users.length; i++) {
-      var actualUser = users[i];
-      actualUser.role = 'Clinical';
-      await User.findByIdAndUpdate(actualUser._id, actualUser, {new: true}, async (err, userUpdated) => {
-        console.log(userUpdated);
-      });
-    }
-
-  });
-}
-
 module.exports = {
-	getAnnotate_batch,
-  changeRol
+	getAnnotate_batch
 }
