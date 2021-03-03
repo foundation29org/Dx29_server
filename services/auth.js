@@ -23,28 +23,45 @@ function createToken (user){
 }
 
 function decodeToken(token){
-	const decoded = new Promise((resolve, reject) => {
+	const decoded = new Promise(async (resolve, reject) => {
 		try{
 			const payload = jwt.decode(token, config.SECRET_TOKEN)
 			let userId= crypt.decrypt(payload.sub);
-			User.findById(userId, {"password" : false, "__v" : false, "confirmationCode" : false, "loginAttempts" : false, "confirmed" : false, "lastLogin" : false}, (err, user) => {
-				if(user.role!=payload.role || userId!=user._id || user.subrole!=payload.subrole){
+			await User.findById(userId, {"password" : false, "__v" : false, "confirmationCode" : false, "loginAttempts" : false, "confirmed" : false, "lastLogin" : false}, (err, user) => {
+				if(err){
 					reject({
 						status: 403,
 						message: 'Hacker!'
 					})
+				}else{
+					if(user){
+						if(user.role!=payload.role || userId!=user._id || user.subrole!=payload.subrole){
+							reject({
+								status: 403,
+								message: 'Hacker!'
+							})
+						}
+						//comprobar si el tokenes válido
+						if (payload.exp <= moment().unix()){
+							reject({
+								status: 401,
+								message: 'Token expired'
+							})
+						}
+						//si el token es correcto, obtenemos el sub, que es el código del usuario
+						var subdecrypt= crypt.decrypt(payload.sub.toString());
+						resolve(subdecrypt)
+
+					}else{
+
+						reject({
+							status: 403,
+							message: 'Hacker!'
+						})
+
+					}
 				}
 			})
-			//comprobar si el tokenes válido
-			if (payload.exp <= moment().unix()){
-				reject({
-					status: 401,
-					message: 'Token expired'
-				})
-			}
-			//si el token es correcto, obtenemos el sub, que es el código del usuario
-			var subdecrypt= crypt.decrypt(payload.sub.toString());
-			resolve(subdecrypt)
 		}catch (err){
 			var messageresult='Invalid Token';
 			if(err.message == "Token expired"){
@@ -56,7 +73,6 @@ function decodeToken(token){
 			})
 		}
 	})
-
 	return decoded
 }
 
