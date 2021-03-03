@@ -35,7 +35,7 @@ function decodeToken(token){
 					})
 				}else{
 					if(user){
-						if(user.role!=payload.role || userId!=user._id || user.subrole!=payload.subrole){
+						if(user.role!=payload.role || userId!=user._id){
 							reject({
 								status: 403,
 								message: 'Hacker!'
