@@ -10,6 +10,7 @@ const Diagnosis = require('../../../models/diagnosis')
 const crypt = require('../../../services/crypt')
 const https = require('https');
 const request = require("request")
+const config = require('../../../config')
 
 /**
  * @api {get} https://health29.org/api/phenotypes/:patientId Get phenotype
@@ -274,15 +275,17 @@ function getRelatedConditions(req, res){
 	  hposStrins+='&id='+element;
 		//hposStrins+= '&id=';
 	});
-
 	request({
   //url: 'https://monarchinitiative.org/analyze/phenotype.json?input_items='+hposStrins+'&limit=100&target_species=human',
-	url: 'https://api.monarchinitiative.org/api/sim/search?is_feature_set=true&metric=phenodigm'+hposStrins+'&limit='+limit+'&taxon=9606',
+	url: 'https://api.monarchinitiative.org/api/sim/search?is_feature_set=true&metric=phenodigm'+hposStrins+'&limit='+limit,
   json: true
 	}, function(error, response, body) {
 		if(error){
-			return res.status(500).send({message: `Error monarch: ${error}`})
+      console.log(error);
+      tryOWLSim3(res, test, limit);
+			//return res.status(500).send({message: `Error monarch: ${error}`})
 		}else{
+      //console.log(response)
 			if(body.matches!=undefined){
 				var result = [];
 				for(var i = 0; i < body.matches.length; i++) { //data.results.length
@@ -291,10 +294,47 @@ function getRelatedConditions(req, res){
 					}
 				}
 				return res.status(202).send({diseases: result})
-			}
+			}else{
+        tryOWLSim3(res, test, limit);
+      }
 		}
 
 	});
+
+}
+
+function tryOWLSim3(res, test, limit){
+  var hposStrins ='';
+	test.forEach(function(element) {
+    if(hposStrins==''){
+      hposStrins=element;
+    }else{
+      hposStrins+='&id='+element;
+    }
+	});
+  var url = config.f29bio+'/api/OWLSim3/match/phenodigm?id='+hposStrins+'&limit='+limit;
+  request({
+  url: config.f29bio+'/api/OWLSim3/match/phenodigm?id='+hposStrins+'&limit='+limit,
+  json: true
+  }, function(error, response, body) {
+    if(error){
+      res.status(500).send({message: `Error monarch: ${error}`})
+    }else{
+      var resultowsim = JSON.parse(body)
+      if(resultowsim.matches!=undefined){
+        var result = [];
+        for(var i = 0; i < resultowsim.matches.length; i++) { //data.results.length
+          if(resultowsim.matches[i]!=undefined){
+            result.push({"name":{label: resultowsim.matches[i].matchLabel, id: resultowsim.matches[i].matchId} , "score": resultowsim.matches[i].rawScore, "matches": []});
+          }
+        }
+        res.status(202).send({diseases: result})
+      }else{
+        res.status(500).send({message: `Error monarch: ${error}`})
+      }
+    }
+
+  });
 
 }
 
