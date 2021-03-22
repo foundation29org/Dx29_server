@@ -7,7 +7,6 @@ const User = require('../../models/user')
 const Lang = require('../../models/lang')
 const crypt = require('../../services/crypt')
 const fs = require('fs');
-const translate = require('google-translate-api');
 
 function updateLangFile (req, res){
 	let userId= crypt.decrypt(req.params.userId);
@@ -103,16 +102,9 @@ function addlang (req, res){
 
 
 async function processObj(obj, code, name, res){
-	var keys=Object.keys(obj);
-	var result = {};
-	for (var i = 0; i < keys.length; i++) {
-		var keysLevel2 = Object.keys(obj[keys[i]]);
-		result = await processObj2(obj, keys, keysLevel2, i, code);
-		//this.keyslevel2.push(Object.keys(res.jsonData[tempo]));
-	}
 
 	//subir file
-	fs.writeFile('./dist/assets/i18n/'+code+'.json', JSON.stringify(result.data), (err) => {
+	fs.writeFile('./dist/assets/i18n/'+code+'.json', JSON.stringify(obj), (err) => {
 		if (err) {
 			res.status(403).send({message: 'not added'})
 		}
@@ -129,42 +121,6 @@ async function processObj(obj, code, name, res){
 	});
 
 	//return obj
-}
-
-
-async function processObj2(obj2, keys, keysLevel2, i, code){
-	var supported = true;
-	for (var j = 0; j < keysLevel2.length && supported; j++) {
-		if(keysLevel2[j] !== 'listqna'){
-			await translate(obj2[keys[i]][keysLevel2[j]], {from: 'en', to: code }).then(res => {
-					obj2[keys[i]][keysLevel2[j]]= res.text;
-			}).catch(err => {
-				console.error(err);
-				supported = false;
-
-			});
-		}else{
-			//trducir las faqs
-			var keysLevel3 = Object.keys(obj2[keys[i]][keysLevel2[j]]);
-			obj2 = await processObj3(obj2, keys, keysLevel2, keysLevel3, i,  j, code);
-
-		}
-
-	}
-	return {data:obj2, isSupported: supported };
-}
-
-
-async function processObj3(obj3, keys, keysLevel2, keysLevel3, i, j, code){
-	for (var k = 0; k < keysLevel3.length; k++) {
-			await translate(obj3[keys[i]][keysLevel2[j]][keysLevel3[k]], {from: 'en', to: code }).then(res => {
-					obj3[keys[i]][keysLevel2[j]][keysLevel3[k]]= res.text;
-			}).catch(err => {
-					console.error(err);
-			});
-
-	}
-	return obj3;
 }
 
 

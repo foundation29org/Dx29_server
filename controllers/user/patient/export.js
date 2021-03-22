@@ -9,7 +9,6 @@ const crypt = require('../../../services/crypt')
 
 const Phenotype = require('../../../models/phenotype')
 const PhenotypeHistory = require('../../../models/phenotype-history')
-const Genotype = require('../../../models/genotype')
 
 function getData (req, res){
 	let patientId= crypt.decrypt(req.params.patientId);
@@ -35,15 +34,7 @@ function getData (req, res){
 						listPhenotypeHistory.push(phenotype);
 					});
 					result.push({phenotypeHistory:listPhenotypeHistory});
-
-					Genotype.findOne({"createdBy": patientId}, {"createdBy" : false }, (err, genotype) => {
-						if(genotype){
-							result.push({genotype:genotype});
-						}
-						res.status(200).send(result)
-
-
-					})
+					res.status(200).send(result)
 
 				});
 			})
