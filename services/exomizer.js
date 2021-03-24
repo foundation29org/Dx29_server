@@ -9,7 +9,7 @@ const config = require('../config')
 var azure = require('azure-storage');
 
 var blobService = azure
-      .createBlobService("blobgenomics","lXaW8+GnmQuHYVku3GWEjZnRhi9hv5u7v2kGvRiUQR6/PTlJuIZT+hyf+nUgLGTSpIToheyZ7oXyX34+q3s63g==");
+      .createBlobService("blobgenomics",config.keyGenomics);
 
 // NOT in use
 function observerProcessExomizer (req, res){
