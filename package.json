@@ -14,8 +14,7 @@
     "updateBlobgenomicsNCR": "node -e \"require('./services/ncrUpdate/ncrUpdate.js').updateBlobgenomicsStructureNCRDocURL()\"",
     "createContainerIfNotExists": "node -e \"require('./services/f29azure.js').createContainerIfNotExists()\"",
     "seeSharing": "node -e \"require('./services/f29azure.js').seeSharing()\"",
-    "setShowSwalIntro": "node -e \"require('./services/f29azure.js').setShowSwalIntro()\"",
-    "changeRol": "node -e \"require('./services/f29ncr.js').changeRol()\""
+    "setShowSwalIntro": "node -e \"require('./services/f29azure.js').setShowSwalIntro()\""
   },
   "author": "LOA",
   "license": "MIT",
@@ -29,7 +28,6 @@
     "express": "^4.16.2",
     "express-handlebars": "^3.0.0",
     "fs-extra": "^5.0.0",
-    "google-translate-api": "^2.3.0",
     "jasmine": "^3.5.0",
     "js-sha512": "^0.7.1",
     "jwt-simple": "^0.5.1",

@@ -5,7 +5,7 @@ const config = require('../config')
 var azure = require('azure-storage');
 const storage = require("@azure/storage-blob")
 const accountnameGenomics ="blobgenomics";
-const keyGenomics = "lXaW8+GnmQuHYVku3GWEjZnRhi9hv5u7v2kGvRiUQR6/PTlJuIZT+hyf+nUgLGTSpIToheyZ7oXyX34+q3s63g==";
+const keyGenomics = config.keyGenomics;
 const sharedKeyCredentialGenomics = new storage.StorageSharedKeyCredential(accountnameGenomics,keyGenomics);
 
 var blobService = azure

@@ -11,7 +11,7 @@ const Patient = require('../../models/patient')
 
 var azure = require('azure-storage');
 var blobService = azure
-      .createBlobService("blobgenomics","lXaW8+GnmQuHYVku3GWEjZnRhi9hv5u7v2kGvRiUQR6/PTlJuIZT+hyf+nUgLGTSpIToheyZ7oXyX34+q3s63g==");
+      .createBlobService("blobgenomics",config.keyGenomics);
 const blobInfo = require('../blob.js')
 
 async function getPatientsAndUpdateEnterValuesListToUpdate(){

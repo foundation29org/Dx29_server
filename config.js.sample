@@ -23,7 +23,7 @@ module.exports = {
     sasToken: undefined,
     blobAccountUrl: undefined,
   },
-  
+
   blobData:{ // Blob data information: {storageAccount:<account>,storageAccessKey: "<storage access key>"}
     storageAccount:undefined,
     storageAccessKey:undefined
@@ -33,5 +33,6 @@ module.exports = {
   f29ncr: undefined, // f29Bio sevice URL
   ncrBearer: process.env.NCRBEARER, // If you are developing, add a second parameter with "||" and the ncr bearer, in prod the first
   translationKey: process.env.TRANSLATION_KEY, // If you are developing, add a second parameter with "||" and the translation service key, in prod the first
-  translationCategory: process.env.TRANSLATION_CATEGORY // If you are developing, add a second parameter with "||" and a translation category, in prod the first
+  translationCategory: process.env.TRANSLATION_CATEGORY // If you are developing, add a second parameter with "||" and a translation category, in prod the first,
+  keyGenomics: undefined //Azure Storage account KEY. Use access keys to authenticate your applications when making requests to this Azure storage account. 
 }
