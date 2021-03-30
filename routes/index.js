@@ -145,6 +145,7 @@ api.put('/diagnosis/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosis
 api.delete('/diagnosis/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosisCtrl.deleteDiagnosis)//de momento no se usa
 api.put('/diagnosis/filters/:diagnosisId', auth(roles.ClinicalSuperAdmin), diagnosisCtrl.updateFilters)
 api.put('/diagnosis/relatedconditions/:diagnosisId', auth(roles.ClinicalSuperAdmin), diagnosisCtrl.updateRelatedconditions)
+api.put('/diagnosis/hasvcf/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosisCtrl.updateHasVCF)
 
 api.get('/case/:userId', auth(roles.ClinicalSuperAdmin), diagnosisCasesCtrl.getPatientsInfo)
 api.get('/sharedcase/:userId', auth(roles.UserClinicalSuperAdmin), diagnosisCasesCtrl.getSharedPatientsInfo)
