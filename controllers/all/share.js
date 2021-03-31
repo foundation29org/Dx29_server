@@ -139,13 +139,15 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 							}else{
 								if(isNewUser){
 									//invitarle a la plataforma, mandarle el link para cuando se registre
-									serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message)
+									User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+									serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email)
 										.then(response => {
 											return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
 										})
 										.catch(response => {
 											return res.status(200).send({message: 'Email cant sent'})
 										})
+									})
 								}else{
 									User.findOne({ 'email': email }, function (err, clinical) {
 										User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
@@ -226,26 +228,31 @@ function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res,
 				return res.status(500).send({ message: 'Fail sending email'})
 			})
 	}else{
-		if(isNewUser){
-			//invitarle a la plataforma, mandarle el link para cuando se registre
-			serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message)
-				.then(response => {
-					return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
-				})
-				.catch(response => {
-					return res.status(200).send({message: 'Email cant sent'})
-				})
-		}else{
-			User.findOne({ '_id': patientId }, function (err, usercre) {
-				serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, role)
+		let patientId = crypt.decrypt(req.body.patient);
+		Patient.findById(patientId, (err, patient) => {
+			if(isNewUser){
+				//invitarle a la plataforma, mandarle el link para cuando se registre
+				User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+				serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email)
 					.then(response => {
-						return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+						return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
 					})
 					.catch(response => {
-						return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+						return res.status(200).send({message: 'Email cant sent'})
 					})
 				})
-		}
+			}else{
+				User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+					serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, role)
+						.then(response => {
+							return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+						})
+						.catch(response => {
+							return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+						})
+					})
+			}
+		})
 	}
 }
 
@@ -510,11 +517,13 @@ function updatepermissions(req,res){
 						User.findOne({ 'email': patient.sharing[i].email }, function (err, user) {
 							if(err) return res.status(500).send({ message: 'Error searching the user'})
 							if(!user){
-								serviceEmail.sendMailNewClinicialShare(patient.sharing[i].email, patient.patientName, req.body.lang, '', message)
+								User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+								serviceEmail.sendMailNewClinicialShare(patient.sharing[i].email, patient.patientName, req.body.lang, '', message, usercre.email)
 									.then(response => {
 									})
 									.catch(response => {
 									})
+								})
 							}
 						})
 
