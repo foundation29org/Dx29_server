@@ -346,7 +346,7 @@ function sendMailMonarchIsInactive (){
   return decoded
 }
 
-function sendMailInvite (email, lang){
+function sendMailInvite (email, lang, patientName){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -370,7 +370,7 @@ function sendMailInvite (email, lang){
       template: 'invite/_'+lang,
       context: {
         client_server : client_server,
-        urlImg: urlImg
+        patientName: patientName
       }
     };
 
@@ -527,7 +527,7 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
   return decoded
 }
 
-function sendMailNewClinicialShare (email, patientName, lang, internalmessage, message, emailOrigin){
+function sendMailNewClinicialShare (email, patientName, lang, internalmessage, message, emailOrigin, mydata){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -545,55 +545,116 @@ function sendMailNewClinicialShare (email, patientName, lang, internalmessage, m
 
     var mailOptions = {};
     var temp =  message.replace(/ /g,'')
-
-    if(internalmessage=='Request genetic test'){
-      //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'new_clinical_share_genetic/_'+lang,
-        context: {
-          client_server : client_server,
-          patientName: patientName,
-          email: email,
-          urlImg: urlImg
-        }
-      };
-    }else{
-      if(temp.length==0){
+    if(mydata.myRole=='Clinical'){
+      if(internalmessage=='Request genetic test'){
+        //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
         mailOptions = {
           to: email,
           from: TRANSPORTER_OPTIONS.auth.user,
           bcc: maillistbcc,
           subject: subjectlang,
-          template: 'new_clinical_share/_'+lang,
+          template: 'new_clinical_share_genetic/_'+lang,
           context: {
             client_server : client_server,
             patientName: patientName,
             email: email,
-            message: message,
-            emailOrigin: emailOrigin
+            urlImg: urlImg
           }
         };
       }else{
+        if(lang=='es'){
+          subjectlang=mydata.myUserName+ ' quiere tu opinión sobre '+patientName;
+        }else{
+          subjectlang=mydata.myUserName+ '  wants your opinion on '+patientName;
+        }
+
+        if(temp.length==0){
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'clinical_to_new_clinical_share/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin,
+              myEmail:mydata.myEmail,
+              myUserName:mydata.myUserName
+            }
+          };
+        }else{
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'clinical_to_new_clinical_share_withmsg/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin,
+              myEmail:mydata.myEmail,
+              myUserName:mydata.myUserName
+            }
+          };
+        }
+      }
+    }else{
+      if(internalmessage=='Request genetic test'){
+        //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
         mailOptions = {
           to: email,
           from: TRANSPORTER_OPTIONS.auth.user,
           bcc: maillistbcc,
           subject: subjectlang,
-          template: 'new_clinical_share_withmsg/_'+lang,
+          template: 'new_clinical_share_genetic/_'+lang,
           context: {
             client_server : client_server,
             patientName: patientName,
             email: email,
-            message: message,
-            emailOrigin: emailOrigin
+            urlImg: urlImg
           }
         };
+      }else{
+        if(temp.length==0){
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'new_clinical_share/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin
+            }
+          };
+        }else{
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'new_clinical_share_withmsg/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin
+            }
+          };
+        }
       }
     }
+
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {

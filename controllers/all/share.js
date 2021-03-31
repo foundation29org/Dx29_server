@@ -19,6 +19,8 @@ function shareOrInviteWith(req, res){
 	let message = req.body.message
 	let ownerID = req.body.ownerID
 	let isMine = req.body.isMine
+	let mydata = req.body.myData;
+
 	var state = ''
 	if(req.body.state != undefined){
 		state = req.body.state
@@ -90,7 +92,7 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 					if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 					if(patientUpdated){
 						if(role=='User'){
-							serviceEmail.sendMailInvite(email, lang)
+							serviceEmail.sendMailInvite(email, lang, patientName)
 								.then(response => {
 									return res.status(200).send({ message: 'Email sent'})
 								})
@@ -140,13 +142,18 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 								if(isNewUser){
 									//invitarle a la plataforma, mandarle el link para cuando se registre
 									User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
-									serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email)
-										.then(response => {
-											return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
-										})
-										.catch(response => {
-											return res.status(200).send({message: 'Email cant sent'})
-										})
+										var decryptOwnerID = crypt.decrypt(ownerID);
+										User.findById(decryptOwnerID, (err, userOwner) => {
+											var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+											serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, mydata)
+												.then(response => {
+													return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
+												})
+												.catch(response => {
+													return res.status(200).send({message: 'Email cant sent'})
+												})
+											})
+
 									})
 								}else{
 									User.findOne({ 'email': email }, function (err, clinical) {
@@ -186,6 +193,7 @@ function resendShareOrInviteWith(req, res){
 	let patientIdEncrypt = req.body.account.sub;
 	let patientName = req.body.account.patientName;
 	let internalmessage = req.body.internalmessage;
+	let ownerID = req.body.ownerID;
 
 	if(req.body.role == 'User'){
 		User.findOne({ 'email': email }, function (err, user) {
@@ -197,7 +205,7 @@ function resendShareOrInviteWith(req, res){
 				//return res.status(200).send({ message: 'There is already an account with that email'})
 			}else{
 				//enviar email a usuario
-				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage, patientId)
+				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 			}
 		})
 	}else{
@@ -208,19 +216,19 @@ function resendShareOrInviteWith(req, res){
 				if(userRole=='User'){
 					res.status(200).send({ message: 'There is already an account with that email'})
 				}else{
-					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage, patientId)
+					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 				}
 
 			}else{
-				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage, patientId)
+				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 			}
 		})
 	}
 }
 
-function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage, patientId){
+function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage, patientId, ownerID){
 	if(role=='User'){
-		serviceEmail.sendMailInvite(email, lang)
+		serviceEmail.sendMailInvite(email, lang, patientName)
 			.then(response => {
 				return res.status(200).send({ message: 'Email sent'})
 			})
@@ -233,12 +241,16 @@ function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res,
 			if(isNewUser){
 				//invitarle a la plataforma, mandarle el link para cuando se registre
 				User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
-				serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email)
-					.then(response => {
-						return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
-					})
-					.catch(response => {
-						return res.status(200).send({message: 'Email cant sent'})
+					var decryptOwnerID = crypt.decrypt(ownerID);
+					User.findById(decryptOwnerID, (err, userOwner) => {
+						var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+						serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, mydata)
+							.then(response => {
+								return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
+							})
+							.catch(response => {
+								return res.status(200).send({message: 'Email cant sent'})
+							})
 					})
 				})
 			}else{
@@ -518,7 +530,8 @@ function updatepermissions(req,res){
 							if(err) return res.status(500).send({ message: 'Error searching the user'})
 							if(!user){
 								User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
-								serviceEmail.sendMailNewClinicialShare(patient.sharing[i].email, patient.patientName, req.body.lang, '', message, usercre.email)
+									var myData={myEmail:null, myRole: 'User', myUserName: ''};
+								serviceEmail.sendMailNewClinicialShare(patient.sharing[i].email, patient.patientName, req.body.lang, '', message, usercre.email, myData)
 									.then(response => {
 									})
 									.catch(response => {
