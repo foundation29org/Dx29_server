@@ -502,6 +502,7 @@ function updatepermissions(req,res){
 			var foundUserId = false;
 			for (var i = 0; i < patient.sharing.length && !foundUserId; i++) {
 				if(patient.sharing[i].email == req.body.email){
+					var email = patient.sharing[i].email;
 					var state = ''
 					if(req.body.state == "false"){
 						state = 'Rejected'
@@ -510,7 +511,7 @@ function updatepermissions(req,res){
 						User.findOne({ 'email': patient.sharing[i].email }, function (err, user) {
 							if(err) return res.status(500).send({ message: 'Error searching the user'})
 							if(!user){
-								serviceEmail.sendMailNewClinicialShare(patient.sharing[i].email, patient.patientName, req.body.lang, '', message)
+								serviceEmail.sendMailNewClinicialShare(email, patient.patientName, req.body.lang, '', '')
 									.then(response => {
 									})
 									.catch(response => {
