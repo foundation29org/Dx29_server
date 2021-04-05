@@ -167,7 +167,7 @@ api.post('/revokepermission/:patientId', auth(roles.UserClinicalSuperAdmin), sha
 api.post('/rejectpermission/:patientId', auth(roles.UserClinicalSuperAdmin), shareOrInviteCtrl.rejectpermission)
 api.post('/setpermission/:patientId', auth(roles.UserClinicalSuperAdmin), shareOrInviteCtrl.setPermissions)
 api.post('/sharingaccountsclinical/:userId', auth(roles.UserClinicalSuperAdmin), shareOrInviteCtrl.getDataFromSharingAccountsListPatients)
-api.post('/updatepermissions/', auth(roles.UserClinicalSuperAdmin), shareOrInviteCtrl.updatepermissions)
+api.post('/updatepermissions/', shareOrInviteCtrl.updatepermissions)
 api.post('/updateshowSwalIntro/:patientId', auth(roles.ClinicalSuperAdmin), shareOrInviteCtrl.updateshowSwalIntro)
 
 api.get('/testservicemonarch', testServiceMonarchCtrl.testMonarchService)
