@@ -1,0 +1,9 @@
+<p>Hello,</p>
+<p>
+  {{ownerUserName}} wants to share your data with {{userName}} and they need your permissions to do it. What do you want to do?
+</p>
+<p><a href="{{client_server}}/permissions?patient={{patientId}}&email={{email}}&emailorigen={{owneremail}}&patientEmail={{patientEmail}}&lang={{lang}}&state=true">I accept sharing this case</a></p>
+<p><a href="{{client_server}}/permissions?patient={{patientId}}&email={{email}}&emailorigen={{owneremail}}&patientEmail={{patientEmail}}&lang={{lang}}&state=false">I reject sharing this case</a></p>
+<p>If you have any doubts or questions about <a href="{{client_server}}">Dx29</a>, please reply to this email. If you would like to contact {{ownerUserName}}, please write to <a href="mailto:{{owneremail}}">{{owneremail}}</a>
+If you would like to contact {{userName}}, please write to: {{email}}.
+</p>
