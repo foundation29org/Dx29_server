@@ -346,7 +346,7 @@ function sendMailMonarchIsInactive (){
   return decoded
 }
 
-function sendMailInvite (email, lang){
+function sendMailInvite (email, lang, patientName){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -370,7 +370,7 @@ function sendMailInvite (email, lang){
       template: 'invite/_'+lang,
       context: {
         client_server : client_server,
-        urlImg: urlImg
+        patientName: patientName
       }
     };
 
@@ -527,7 +527,7 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
   return decoded
 }
 
-function sendMailNewClinicialShare (email, patientName, lang, internalmessage, message){
+function sendMailNewClinicialShare (email, patientName, lang, internalmessage, message, emailOrigin, mydata){
   const decoded = new Promise((resolve, reject) => {
     var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
@@ -536,44 +536,125 @@ function sendMailNewClinicialShare (email, patientName, lang, internalmessage, m
     ];
 
     var subjectlang='Dx29 - A patient is inviting you to discover Dx29';
-
+    patientName= capitalizeFirstLetter(patientName);
     if(lang=='es'){
-      subjectlang='Dx29 - Un paciente le invita a descubrir Dx29';
-    }else if(lang=='nl'){
-      subjectlang='Dx29 - Een patiënt nodigt u uit om Dx29 te ontdekken';
+      subjectlang=patientName+ ' necesita ayuda con su diagnóstico';
+    }else{
+      subjectlang=patientName+ ' needs help with their diagnosis';
     }
 
-    var mailOptions = {
-      to: email,
-      from: TRANSPORTER_OPTIONS.auth.user,
-      bcc: maillistbcc,
-      subject: subjectlang,
-      template: 'new_clinical_share/_'+lang,
-      context: {
-        client_server : client_server,
-        patientName: patientName,
-        email: email,
-        urlImg: urlImg,
-        message: message
-      }
-    };
-
-    if(internalmessage=='Request genetic test'){
-      //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'new_clinical_share_genetic/_'+lang,
-        context: {
-          client_server : client_server,
-          patientName: patientName,
-          email: email,
-          urlImg: urlImg
+    var mailOptions = {};
+    var temp =  message.replace(/ /g,'')
+    if(mydata.myRole=='Clinical'){
+      if(internalmessage=='Request genetic test'){
+        //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'new_clinical_share_genetic/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            email: email,
+            urlImg: urlImg
+          }
+        };
+      }else{
+        if(lang=='es'){
+          subjectlang=mydata.myUserName+ ' quiere tu opinión sobre '+patientName;
+        }else{
+          subjectlang=mydata.myUserName+ '  wants your opinion on '+patientName;
         }
-      };
+
+        if(temp.length==0){
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'clinical_to_new_clinical_share/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin,
+              myEmail:mydata.myEmail,
+              myUserName:mydata.myUserName
+            }
+          };
+        }else{
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'clinical_to_new_clinical_share_withmsg/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin,
+              myEmail:mydata.myEmail,
+              myUserName:mydata.myUserName
+            }
+          };
+        }
+      }
+    }else{
+      if(internalmessage=='Request genetic test'){
+        //Solicitud de test genetico por parte del paciente a un clínico que no existe (caso 1)
+        mailOptions = {
+          to: email,
+          from: TRANSPORTER_OPTIONS.auth.user,
+          bcc: maillistbcc,
+          subject: subjectlang,
+          template: 'new_clinical_share_genetic/_'+lang,
+          context: {
+            client_server : client_server,
+            patientName: patientName,
+            email: email,
+            urlImg: urlImg
+          }
+        };
+      }else{
+        if(temp.length==0){
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'new_clinical_share/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin
+            }
+          };
+        }else{
+          mailOptions = {
+            to: email,
+            from: TRANSPORTER_OPTIONS.auth.user,
+            bcc: maillistbcc,
+            subject: subjectlang,
+            template: 'new_clinical_share_withmsg/_'+lang,
+            context: {
+              client_server : client_server,
+              patientName: patientName,
+              email: email,
+              message: message,
+              emailOrigin: emailOrigin
+            }
+          };
+        }
+      }
     }
+
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
@@ -591,40 +672,209 @@ function sendMailNewClinicialShare (email, patientName, lang, internalmessage, m
   return decoded
 }
 
-function sendMailRequestChangePermissions (email, userName, lang, patientEmail, patientName, permissions, message, ownerUserName, owneremail, patientId){
+function sendMailRequestChangePermissionsUser (email, userName, lang, patientEmail, patientName, permissions, message, ownerUserName, owneremail, patientId){
   const decoded = new Promise((resolve, reject) => {
-    var urlImg = 'https://www.dx29.ai/assets/img/logo-Dx29.png';
 
     var maillistbcc = [
       TRANSPORTER_OPTIONS.auth.user
     ];
 
-    var subjectlang='Dx29 - Data Sharing Request';
+    var subjectlang= ownerUserName+ ' wants to share your case';
 
     if(lang=='es'){
-      subjectlang='Dx29 - Solicitud de compartición de datos';
+      subjectlang=ownerUserName+ ' quiere compartir tu caso';
     }
 
-    var mailOptions = {
-      to: patientEmail,
-      from: TRANSPORTER_OPTIONS.auth.user,
-      bcc: maillistbcc,
-      subject: subjectlang,
-      template: 'data_sharing_request/_'+lang,
-      context: {
-        client_server : client_server,
-        patientName: patientName,
-        ownerUserName: ownerUserName,
-        owneremail: owneremail,
-        message: message,
-        email: email,
-        userName: userName,
-        urlImg: urlImg,
-        patientId: patientId,
-        patientEmail: patientEmail,
-        lang: lang
+    var mailOptions = {};
+    var temp =  message.replace(/ /g,'')
+    if(temp.length==0){
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_user/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          userName: userName,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }else{
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_user_withmsg/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          userName: userName,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
       }
-    };
+    });
+
+  });
+  return decoded
+}
+
+function sendMailRequestChangePermissionsUserNewClinician (email, lang, patientEmail, patientName, permissions, message, ownerUserName, owneremail, patientId){
+  const decoded = new Promise((resolve, reject) => {
+
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var subjectlang= ownerUserName+ ' wants to share your case';
+
+    if(lang=='es'){
+      subjectlang=ownerUserName+ ' quiere compartir tu caso';
+    }
+
+    var mailOptions = {};
+    var temp =  message.replace(/ /g,'')
+    if(temp.length==0){
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_user_new_clinician/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }else{
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_user_new_clinician_withmsg/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
+function sendMailRequestChangePermissionsClinician (email, userName, lang, patientEmail, patientName, permissions, message, ownerUserName, owneremail, patientId){
+  const decoded = new Promise((resolve, reject) => {
+
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var subjectlang= ownerUserName+ ' needs permission to share your case';
+
+    if(lang=='es'){
+      subjectlang=ownerUserName+ ' necesita permiso para compartir tu caso';
+    }
+
+    var mailOptions = {};
+    var temp =  message.replace(/ /g,'')
+    if(temp.length==0){
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_clinician/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          userName: userName,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }else{
+      mailOptions = {
+        to: patientEmail,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'data_sharing_request_clinician_withmsg/_'+lang,
+        context: {
+          client_server : client_server,
+          patientName: patientName,
+          ownerUserName: ownerUserName,
+          owneremail: owneremail,
+          message: message,
+          email: email,
+          userName: userName,
+          patientId: patientId,
+          patientEmail: patientEmail,
+          lang: lang
+        }
+      };
+    }
+
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
@@ -952,8 +1202,127 @@ function sendMailErrorEmail (data, msg){
   return decoded
 }
 
+
+function sendMailNotificationRequest (userName, userEmail, patientName, destiny, email, lang){
+  const decoded = new Promise((resolve, reject) => {
+
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var subjectlang='Permission to share the case';
+
+    if(lang=='es'){
+      subjectlang='Permiso para compartir el caso';
+    }
+
+    var mailOptions = {
+      to: email,
+      from: TRANSPORTER_OPTIONS.auth.user,
+      bcc: maillistbcc,
+      subject: subjectlang,
+      template: 'notification_request/_'+lang,
+      context: {
+        userName: userName,
+        userEmail: userEmail,
+        patientName: patientName,
+        destiny: destiny
+      }
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
+function sendEmailNotifyPermission (userName, userNameDestiny, patientEmail, emailorigen, lang, state, email){
+  const decoded = new Promise((resolve, reject) => {
+
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var literalState = 'rejected'
+    if(state== "true"){
+      literalState = 'approved'
+    }
+
+    if(lang=='es'){
+      if(state== "true"){
+        literalState = 'aprobado';
+      }else{
+        literalState = 'rechazado';
+      }
+    }
+
+    var subjectlang='Permission to share the case: '+literalState;
+
+    if(lang=='es'){
+      subjectlang='Permiso para compartir el caso: '+literalState;
+    }
+
+    var mailOptions = {};
+
+    if(state== "true"){
+      mailOptions = {
+        to: emailorigen,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        cc: email,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'notify_permission_approved/_'+lang,
+        context: {
+          userName: userName,
+          userNameDestiny: userNameDestiny,
+          patientEmail: patientEmail
+        }
+      };
+    }else{
+      mailOptions = {
+        to: emailorigen,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'notify_permission_rejected/_'+lang,
+        context: {
+          userName: userName,
+          userNameDestiny: userNameDestiny,
+          patientEmail: patientEmail
+        }
+      };
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
+
 function sendMailDev (params){
   const decoded = new Promise((resolve, reject) => {
+
     var maillistbcc = [
       TRANSPORTER_OPTIONS.auth.user
     ];
@@ -965,8 +1334,7 @@ function sendMailDev (params){
       subject: params.subject,
       template: 'mail_dev/_es',
       context: {
-        data : JSON.stringify(params.data)
-      }
+      data : JSON.stringify(params.data)
     };
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -997,12 +1365,16 @@ module.exports = {
   sendMailInvite,
   sendMailShare,
   sendMailNewClinicialShare,
-  sendMailRequestChangePermissions,
+  sendMailRequestChangePermissionsUser,
+  sendMailRequestChangePermissionsUserNewClinician,
+  sendMailRequestChangePermissionsClinician,
   sendEmailInfoPermissions,
   sendMailProgramRequestToPatient,
   sendMailProgramRequestToClinician,
   sendMail_request_genetic_program_patient,
   sendMail_request_genetic_program_clinician,
   sendMailErrorEmail,
+  sendMailNotificationRequest,
+  sendEmailNotifyPermission,
   sendMailDev
 }
