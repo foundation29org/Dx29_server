@@ -1246,7 +1246,7 @@ function sendMailNotificationRequest (userName, userEmail, patientName, destiny,
   return decoded
 }
 
-function sendEmailNotifyPermission (userName, userNameDestiny, patientEmail, emailorigen, lang, state){
+function sendEmailNotifyPermission (userName, userNameDestiny, patientEmail, emailorigen, lang, state, email){
   const decoded = new Promise((resolve, reject) => {
 
     var maillistbcc = [
@@ -1278,6 +1278,7 @@ function sendEmailNotifyPermission (userName, userNameDestiny, patientEmail, ema
       mailOptions = {
         to: emailorigen,
         from: TRANSPORTER_OPTIONS.auth.user,
+        cc: email,
         bcc: maillistbcc,
         subject: subjectlang,
         template: 'notify_permission_approved/_'+lang,

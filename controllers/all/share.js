@@ -698,14 +698,14 @@ function notifyPermission(patientEmail, patientName, emailorigen, email, lang, s
 			User.findOne({ 'email': email }, function (err, user2) {
 				if (err) return res.status(500).send({message: `Error searching the user: ${err}`})
 				if(user2){
-					serviceEmail.sendEmailNotifyPermission(user.userName, user2.userName, patientEmail, emailorigen, lang, state)
+					serviceEmail.sendEmailNotifyPermission(user.userName, user2.userName, patientEmail, emailorigen, lang, state, email)
 						.then(response => {
 
 						})
 						.catch(response => {
 						})
 				}else{
-					serviceEmail.sendEmailNotifyPermission(user.userName, email, patientEmail, emailorigen, lang, state)
+					serviceEmail.sendEmailNotifyPermission(user.userName, email, patientEmail, emailorigen, lang, state, email)
 						.then(response => {
 
 						})
