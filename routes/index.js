@@ -35,6 +35,8 @@ const testServiceMonarchCtrl = require('../services/crons/test-services-monarch'
 
 const captchaServiceCtrl = require('../services/captcha')
 
+const feedbackDevCtrl = require('../controllers/all/feedback_dev')
+
 const auth = require('../middlewares/auth')
 const roles = require('../middlewares/roles')
 const api = express.Router()
@@ -186,6 +188,10 @@ api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), 
 api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
+
+//service feedback
+api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
+
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
 })*/

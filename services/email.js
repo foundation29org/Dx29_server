@@ -952,6 +952,39 @@ function sendMailErrorEmail (data, msg){
   return decoded
 }
 
+function sendMailDev (params){
+  const decoded = new Promise((resolve, reject) => {
+    var maillistbcc = [
+      TRANSPORTER_OPTIONS.auth.user
+    ];
+
+    var mailOptions = {
+      to: 'dev@foundation29.org',
+      from: TRANSPORTER_OPTIONS.auth.user,
+      bcc: maillistbcc,
+      subject: params.subject,
+      template: 'mail_dev/_es',
+      context: {
+        data : JSON.stringify(params.data)
+      }
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -970,5 +1003,6 @@ module.exports = {
   sendMailProgramRequestToClinician,
   sendMail_request_genetic_program_patient,
   sendMail_request_genetic_program_clinician,
-  sendMailErrorEmail
+  sendMailErrorEmail,
+  sendMailDev
 }
