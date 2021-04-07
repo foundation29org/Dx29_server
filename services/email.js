@@ -510,7 +510,7 @@ function sendMailShare (email, patientName, lang, internalmessage, clinicalName,
         }
       };
     }
-
+    
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
