@@ -1334,7 +1334,8 @@ function sendMailDev (params){
       subject: params.subject,
       template: 'mail_dev/_es',
       context: {
-      data : JSON.stringify(params.data)
+        data : JSON.stringify(params.data)
+      }
     };
 
     transporter.sendMail(mailOptions, function(error, info){
