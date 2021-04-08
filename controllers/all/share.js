@@ -19,6 +19,8 @@ function shareOrInviteWith(req, res){
 	let message = req.body.message
 	let ownerID = req.body.ownerID
 	let isMine = req.body.isMine
+	let mydata = req.body.myData;
+
 	var state = ''
 	if(req.body.state != undefined){
 		state = req.body.state
@@ -90,7 +92,7 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 					if (err) return res.status(500).send({message: `Error making the request: ${err}`})
 					if(patientUpdated){
 						if(role=='User'){
-							serviceEmail.sendMailInvite(email, lang)
+							serviceEmail.sendMailInvite(email, lang, patientName)
 								.then(response => {
 									return res.status(200).send({ message: 'Email sent'})
 								})
@@ -116,13 +118,80 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 												var patientEmail = user2.email;
 												var idEncyyppatid = patientId.toString();
 												var idPatientEncryp = crypt.encrypt(idEncyyppatid);
-												serviceEmail.sendMailRequestChangePermissions(email, userName, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
-													.then(response => {
-														return res.status(200).send({message: 'Data sharing has been requested'})
-													})
-													.catch(response => {
-														return res.status(200).send({message: 'Email cant sent'})
-													})
+												if(user2.role=='User'){
+													if(isNewUser){
+														User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+															var decryptOwnerID = crypt.decrypt(ownerID);
+															User.findById(decryptOwnerID, (err, userOwner) => {
+																//var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+																var myData={myEmail:userOwner.email, myRole: 'User', myUserName: userOwner.userName};
+																serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, myData)
+																	.then(response => {
+																		serviceEmail.sendMailRequestChangePermissionsUserNewClinician(email, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
+																			.then(response => {
+																				return res.status(200).send({message: 'Data sharing has been requested'})
+																			})
+																			.catch(response => {
+																				return res.status(200).send({message: 'Email cant sent'})
+																			})
+																	})
+																	.catch(response => {
+																		return res.status(200).send({message: 'Email cant sent'})
+																	})
+																})
+
+														})
+													}else{
+														serviceEmail.sendMailRequestChangePermissionsUser(email, userName, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
+															.then(response => {
+																return res.status(200).send({message: 'Data sharing has been requested'})
+															})
+															.catch(response => {
+																return res.status(200).send({message: 'Email cant sent'})
+															})
+													}
+
+												}else if(user2.role=='Clinical'){
+													if(isNewUser){
+														//invitarle a la plataforma, mandarle el link para cuando se registre
+														User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+															var decryptOwnerID = crypt.decrypt(ownerID);
+															User.findById(decryptOwnerID, (err, userOwner) => {
+																var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+																serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, mydata)
+																	.then(response => {
+																		serviceEmail.sendMailRequestChangePermissionsUserNewClinician(email, userName, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
+																			.then(response => {
+																				return res.status(200).send({message: 'Data sharing has been requested'})
+																			})
+																			.catch(response => {
+																				return res.status(200).send({message: 'Email cant sent'})
+																			})
+																	})
+																	.catch(response => {
+																		return res.status(200).send({message: 'Email cant sent'})
+																	})
+																})
+
+														})
+													}else{
+														serviceEmail.sendMailRequestChangePermissionsClinician(email, userName, lang, patientEmail, patientName, permissions, message, userOwner.userName, userOwner.email, idPatientEncryp, userId)
+															.then(response => {
+																return res.status(200).send({message: 'Data sharing has been requested'})
+															})
+															.catch(response => {
+																return res.status(200).send({message: 'Email cant sent'})
+															})
+													}
+
+												}
+
+												var destiny = email;
+												if(!isNewUser){
+													destiny = userName;
+												}
+												sendNotificationRequest(patientUpdated.createdBy,patientName, destiny, ownerID, lang)
+
 											}else{
 												return res.status(200).send({message: 'Patient not found'})
 											}
@@ -139,27 +208,43 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 							}else{
 								if(isNewUser){
 									//invitarle a la plataforma, mandarle el link para cuando se registre
-									serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message)
-										.then(response => {
-											return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
-										})
-										.catch(response => {
-											return res.status(200).send({message: 'Email cant sent'})
-										})
+									User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+										var decryptOwnerID = crypt.decrypt(ownerID);
+										User.findById(decryptOwnerID, (err, userOwner) => {
+											var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+											serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, mydata)
+												.then(response => {
+													return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
+												})
+												.catch(response => {
+													return res.status(200).send({message: 'Email cant sent'})
+												})
+											})
+
+									})
 								}else{
 									User.findOne({ 'email': email }, function (err, clinical) {
 										User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
-											serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message, usercre.userName, usercre.email, isMine, role)
+											serviceEmail.sendMailShare(email, patientName, lang, internalmessage, clinical.userName, message, usercre.userName, usercre.email, isMine, usercre.role)
 												.then(response => {
-													return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+													return res.status(200).send({message: 'Patient sharing done and email sent'})
 												})
 												.catch(response => {
-													return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+													return res.status(200).send({message: 'Patient sharing done but email cant sent'})
 												})
 										})
 									})
 
 								}
+
+								var destiny = email;
+								if(!isNewUser){
+									destiny = userName;
+								}
+								if((!permissions.shareWithAll || permissions.askFirst) && !isMine){
+									sendNotificationRequest(patientUpdated.createdBy, patientName, destiny, ownerID, lang)
+								}
+
 							}
 
 
@@ -177,6 +262,26 @@ function addToMySharedList(patientId, role, isNewUser, user, email, lang, patien
 	})
 }
 
+function sendNotificationRequest(createdBy, patientName, destiny, ownerID, lang){
+
+	User.findOne({ '_id': createdBy }, function (err, usercre) {
+		var decryptOwnerID = crypt.decrypt(ownerID);
+		User.findById(decryptOwnerID, (err, userOwner) => {
+			serviceEmail.sendMailNotificationRequest(usercre.userName, usercre.email, patientName, destiny, userOwner.email, lang)
+				.then(response => {
+					console.log('Notification send');
+				})
+				.catch(response => {
+					console.log('Notification not send');
+				})
+		})
+	})
+
+
+
+
+}
+
 function resendShareOrInviteWith(req, res){
 	//let userId= crypt.decrypt(req.body.userId);
 	var email = (req.body.email).toLowerCase();
@@ -184,6 +289,7 @@ function resendShareOrInviteWith(req, res){
 	let patientIdEncrypt = req.body.account.sub;
 	let patientName = req.body.account.patientName;
 	let internalmessage = req.body.internalmessage;
+	let ownerID = req.body.ownerID;
 
 	if(req.body.role == 'User'){
 		User.findOne({ 'email': email }, function (err, user) {
@@ -195,7 +301,7 @@ function resendShareOrInviteWith(req, res){
 				//return res.status(200).send({ message: 'There is already an account with that email'})
 			}else{
 				//enviar email a usuario
-				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage, patientId)
+				resendAddToMySharedList('User', true, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 			}
 		})
 	}else{
@@ -206,19 +312,19 @@ function resendShareOrInviteWith(req, res){
 				if(userRole=='User'){
 					res.status(200).send({ message: 'There is already an account with that email'})
 				}else{
-					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage, patientId)
+					resendAddToMySharedList(userRole, false, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 				}
 
 			}else{
-				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage, patientId)
+				resendAddToMySharedList('Clinical', true, email, req.body.lang, patientName, res, internalmessage, patientId, ownerID)
 			}
 		})
 	}
 }
 
-function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage, patientId){
+function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res, internalmessage, patientId, ownerID){
 	if(role=='User'){
-		serviceEmail.sendMailInvite(email, lang)
+		serviceEmail.sendMailInvite(email, lang, patientName)
 			.then(response => {
 				return res.status(200).send({ message: 'Email sent'})
 			})
@@ -226,26 +332,35 @@ function resendAddToMySharedList(role, isNewUser, email, lang, patientName, res,
 				return res.status(500).send({ message: 'Fail sending email'})
 			})
 	}else{
-		if(isNewUser){
-			//invitarle a la plataforma, mandarle el link para cuando se registre
-			serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message)
-				.then(response => {
-					return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
-				})
-				.catch(response => {
-					return res.status(200).send({message: 'Email cant sent'})
-				})
-		}else{
-			User.findOne({ '_id': patientId }, function (err, usercre) {
-				serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, role)
-					.then(response => {
-						return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
-					})
-					.catch(response => {
-						return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+		let patientId = crypt.decrypt(req.body.patient);
+		Patient.findById(patientId, (err, patient) => {
+			if(isNewUser){
+				//invitarle a la plataforma, mandarle el link para cuando se registre
+				User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+					var decryptOwnerID = crypt.decrypt(ownerID);
+					User.findById(decryptOwnerID, (err, userOwner) => {
+						var mydata = {myEmail:userOwner.email, myRole: userOwner.role, myUserName: userOwner.userName};
+						serviceEmail.sendMailNewClinicialShare(email, patientName, lang, internalmessage, message, usercre.email, mydata)
+							.then(response => {
+								return res.status(200).send({message: 'A request has been submitted for the creation of a new account at Dx29'})
+							})
+							.catch(response => {
+								return res.status(200).send({message: 'Email cant sent'})
+							})
 					})
 				})
-		}
+			}else{
+				User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+					serviceEmail.sendMailShare(email, patientName, lang, internalmessage, null, message, usercre.userName, usercre.email, false, usercre.role)
+						.then(response => {
+							return res.status(200).send({message: 'Patient sharing done and email sent', patientUpdated})
+						})
+						.catch(response => {
+							return res.status(200).send({message: 'Patient sharing done but email cant sent', patientUpdated})
+						})
+					})
+			}
+		})
 	}
 }
 
@@ -504,6 +619,7 @@ function updatepermissions(req,res){
 				if(patient.sharing[i].email == req.body.email){
 					var email = patient.sharing[i].email;
 					var state = ''
+					var email = patient.sharing[i].email;
 					if(req.body.state == "false"){
 						state = 'Rejected'
 					}else{
@@ -511,11 +627,26 @@ function updatepermissions(req,res){
 						User.findOne({ 'email': patient.sharing[i].email }, function (err, user) {
 							if(err) return res.status(500).send({ message: 'Error searching the user'})
 							if(!user){
-								serviceEmail.sendMailNewClinicialShare(email, patient.patientName, req.body.lang, '', '')
-									.then(response => {
-									})
-									.catch(response => {
-									})
+								User.findOne({ '_id': patient.createdBy }, function (err, usercre) {
+
+									if(err) return res.status(500).send({ message: 'Error searching the user'})
+									if(usercre){
+										var myData={myEmail:null, myRole: 'User', myUserName: ''};
+										serviceEmail.sendMailNewClinicialShare(email, patient.patientName, req.body.lang, '', '', usercre.email, myData)
+											.then(response => {
+											})
+											.catch(response => {
+											})
+									}else{
+										var myData={myEmail:null, myRole: 'User', myUserName: ''};
+										serviceEmail.sendMailNewClinicialShare(email, patient.patientName, req.body.lang, '', '', usercre.email, myData)
+											.then(response => {
+											})
+											.catch(response => {
+											})
+									}
+
+								})
 							}
 						})
 
@@ -524,39 +655,113 @@ function updatepermissions(req,res){
 					foundUserId = true;
 				}
 			}
-			if(foundUserId){
 
-				Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err,patientUpdated) => {
-					if(patientUpdated){
-						var result = req.body.state
-						if(result=='true'){
+			var emailorigen = req.body.emailorigen;
+			if(emailorigen==null){
+				var invitedbyID = crypt.decrypt(req.body.invitedby);
+				User.findById(invitedbyID, (err, invitedbyUser) => {
+					emailorigen=invitedbyUser.email;
+					if(foundUserId){
 
-							serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, req.body.emailorigen, req.body.email, req.body.state, req.body.lang)
-								.then(response => {
+						Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err,patientUpdated) => {
+							if(patientUpdated){
+								var result = req.body.state
+								if(result=='true'){
 
-								})
-								.catch(response => {
-								})
-							return res.status(200).send({message: 'Accepted'})
-						}else{
-							serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, req.body.emailorigen, req.body.email, req.body.state, req.body.lang)
-								.then(response => {
+									serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, emailorigen, req.body.email, req.body.state, req.body.lang)
+										.then(response => {
 
-								})
-								.catch(response => {
-								})
-							return res.status(200).send({message: 'Rejected'})
-						}
+										})
+										.catch(response => {
+										})
+									return res.status(200).send({message: 'Accepted'})
+								}else{
+									serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, emailorigen, req.body.email, req.body.state, req.body.lang)
+										.then(response => {
+
+										})
+										.catch(response => {
+										})
+									return res.status(200).send({message: 'Rejected'})
+								}
+							}else{
+								return res.status(200).send({message: 'error'})
+							}
+						})
+
 					}else{
-						return res.status(200).send({message: 'error'})
+						return res.status(200).send({message: 'UserId not found'})
 					}
-				})
 
+					notifyPermission(req.body.patientEmail, patient.patientName, emailorigen, req.body.email, req.body.lang, req.body.state)
+				})
 			}else{
-				return res.status(200).send({message: 'UserId not found'})
+				if(foundUserId){
+
+					Patient.findByIdAndUpdate(patientId, { sharing: patient.sharing }, {new: true}, (err,patientUpdated) => {
+						if(patientUpdated){
+							var result = req.body.state
+							if(result=='true'){
+
+								serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, emailorigen, req.body.email, req.body.state, req.body.lang)
+									.then(response => {
+
+									})
+									.catch(response => {
+									})
+								return res.status(200).send({message: 'Accepted'})
+							}else{
+								serviceEmail.sendEmailInfoPermissions(req.body.patientEmail, emailorigen, req.body.email, req.body.state, req.body.lang)
+									.then(response => {
+
+									})
+									.catch(response => {
+									})
+								return res.status(200).send({message: 'Rejected'})
+							}
+						}else{
+							return res.status(200).send({message: 'error'})
+						}
+					})
+
+				}else{
+					return res.status(200).send({message: 'UserId not found'})
+				}
+
+				notifyPermission(req.body.patientEmail, patient.patientName, emailorigen, req.body.email, req.body.lang, req.body.state)
 			}
+
 		}else{
 			return res.status(200).send({message: 'Patient not found'})
+		}
+	})
+
+}
+
+function notifyPermission(patientEmail, patientName, emailorigen, email, lang, state){
+	User.findOne({ 'email': patientEmail }, function (err, user) {
+		if (err) return res.status(500).send({message: `Error searching the user: ${err}`})
+		if(user){
+			User.findOne({ 'email': email }, function (err, user2) {
+				if (err) return res.status(500).send({message: `Error searching the user: ${err}`})
+				if(user2){
+					serviceEmail.sendEmailNotifyPermission(user.userName, user2.userName, patientEmail, emailorigen, lang, state, email)
+						.then(response => {
+
+						})
+						.catch(response => {
+						})
+				}else{
+					serviceEmail.sendEmailNotifyPermission(user.userName, email, patientEmail, emailorigen, lang, state, email)
+						.then(response => {
+
+						})
+						.catch(response => {
+						})
+				}
+			})
+		}else{
+			return res.status(200).send({message: 'User not found'})
 		}
 	})
 

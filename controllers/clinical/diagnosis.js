@@ -98,11 +98,23 @@ function updateRelatedconditions (req, res){
 	})
 }
 
+function updateHasVCF (req, res){
+	let diagnosisId= req.params.diagnosisId;
+	let update = req.body
+	Diagnosis.findByIdAndUpdate(diagnosisId, { hasVcf: update }, {select: '-createdBy', new: true}, (err,diagnosisUpdated) => {
+		if (err) return res.status(500).send({message: `Error making the request: ${err}`})
+
+		res.status(200).send({message: 'Diagnosis updated', diagnosis: diagnosisUpdated})
+
+	})
+}
+
 module.exports = {
 	getDiagnosis,
 	saveDiagnosis,
 	updateDiagnosis,
 	deleteDiagnosis,
 	updateFilters,
-	updateRelatedconditions
+	updateRelatedconditions,
+	updateHasVCF
 }

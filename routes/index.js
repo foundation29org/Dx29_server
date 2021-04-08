@@ -35,6 +35,8 @@ const testServiceMonarchCtrl = require('../services/crons/test-services-monarch'
 
 const captchaServiceCtrl = require('../services/captcha')
 
+const feedbackDevCtrl = require('../controllers/all/feedback_dev')
+
 const auth = require('../middlewares/auth')
 const roles = require('../middlewares/roles')
 const api = express.Router()
@@ -145,6 +147,7 @@ api.put('/diagnosis/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosis
 api.delete('/diagnosis/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosisCtrl.deleteDiagnosis)//de momento no se usa
 api.put('/diagnosis/filters/:diagnosisId', auth(roles.ClinicalSuperAdmin), diagnosisCtrl.updateFilters)
 api.put('/diagnosis/relatedconditions/:diagnosisId', auth(roles.ClinicalSuperAdmin), diagnosisCtrl.updateRelatedconditions)
+api.put('/diagnosis/hasvcf/:diagnosisId', auth(roles.UserClinicalSuperAdmin), diagnosisCtrl.updateHasVCF)
 
 api.get('/case/:userId', auth(roles.ClinicalSuperAdmin), diagnosisCasesCtrl.getPatientsInfo)
 api.get('/sharedcase/:userId', auth(roles.UserClinicalSuperAdmin), diagnosisCasesCtrl.getSharedPatientsInfo)
@@ -185,6 +188,10 @@ api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), 
 api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
+
+//service feedback
+api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
+
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
 })*/
