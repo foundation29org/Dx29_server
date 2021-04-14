@@ -7,7 +7,7 @@ Dx29 server
 
 [![Build Status](https://f29.visualstudio.com/Health29%20for%20Diagnosis/_apis/build/status/dx29%20-%20PROD%20-%20Server%20-%20CI?branchName=master)](https://f29.visualstudio.com/Health29%20for%20Diagnosis/_build/latest?definitionId=47&branchName=master)   [![Deployment status](https://f29.vsrm.visualstudio.com/_apis/public/Release/badge/88bb841e-8756-480d-9840-a24ba6dd4cb4/16/17)
 
-#### 1. Overview 
+#### 1. Overview
 
 Dx29 is a platform built to assist medical professionals during the diagnosis process to make it quicker and more accurate when dealing with rare diseases.
 
@@ -19,7 +19,7 @@ You can consult the documentation on the [architecture of the dx29 project](http
 
 This project contains the core of the dx29 platform, the webapp. In particular in this repository is the server code of the project.This project contains the methods to access the different services that the [Dx29 client](https://github.com/foundation29org/Dx29_client/) will need.
 
-The project uses [gitflow workflow](https://nvie.com/posts/a-successful-git-branching-model/). 
+The project uses [gitflow workflow](https://nvie.com/posts/a-successful-git-branching-model/).
 According to this it has implemented a branch-based system to work with three different environments. Thus, there are two permanent branches in the project:
 >- The develop branch to work on the development environment.
 >- The master branch to work on the production environment
@@ -43,11 +43,11 @@ To execute the project it is necessary to implement or configure a list of exter
 Thus, we will mainly need:
 
 >- An [Azure Blob storage](https://docs.microsoft.com/en-US/azure/storage/blobs/storage-blobs-introduction) for patient information.
->- Two [Azure Cosmos DB](https://docs.microsoft.com/en-US/azure/cosmos-db/introduction): one for accounts information and the other one for data information. 
+>- Two [Azure Cosmos DB](https://docs.microsoft.com/en-US/azure/cosmos-db/introduction): one for accounts information and the other one for data information.
 >- An [Azure Notification Hub](https://docs.microsoft.com/en-US/azure/notification-hubs/)
 >- An [Azure Service Bus](https://docs.microsoft.com/en-US/azure/service-bus-messaging/service-bus-messaging-overview)
 >- F29 apis (bio,ncr) -> TODO: URL to our opensource service
-    
+
 
 <p>&nbsp;</p>
 
@@ -69,7 +69,7 @@ Run `npm run serve` and the server will be deployed on `http://localhost:<port>/
 
 You can consult the documentation on the [architecture of the dx29 project](https://dx29.readthedocs.io/en/latest/).
 
->- [Dx19 client](https://github.com/foundation29org/Dx29_client/)
+>- [Dx29 client](https://github.com/foundation29org/Dx29_client/)
 >- TODO: F29 API services github
 
 <p>&nbsp;</p>
@@ -84,7 +84,7 @@ You can consult the documentation on the [architecture of the dx29 project](http
 		<img width="150px" src="/img/logo-foundation-twentynine-footer.png">
 	</div>
 	<div align="right" style="padding-top: 0.5% !important">
-		<p align="right">	
+		<p align="right">
 			Copyright © 2020
 			<a style="color:#009DA0" href="https://www.foundation29.org/" target="_blank"> Foundation29</a>
 		</p>
