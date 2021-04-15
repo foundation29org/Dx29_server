@@ -69,7 +69,7 @@ Run `npm run serve` and the server will be deployed on `http://localhost:<port>/
 
 You can consult the documentation on the [architecture of the dx29 project](https://dx29.readthedocs.io/en/latest/).
 
->- [Dx19 client](https://github.com/foundation29org/Dx29_client/)
+>- [Dx29 client](https://github.com/foundation29org/Dx29_client/)
 >- TODO: F29 API services github
 
 <p>&nbsp;</p>
