@@ -32,6 +32,7 @@ function saveDiagnosis (req, res){
 	diagnosis.infoGenesAndConditionsPhen2Genes = req.body.infoGenesAndConditionsPhen2Genes
 	diagnosis.relatedConditions = req.body.relatedConditions
 	diagnosis.hasVcf = req.body.hasVcf
+	diagnosis.isgen = req.body.isgen
 	diagnosis.selectedItemsFilter = req.body.selectedItemsFilter
 	diagnosis.createdBy = patientId
 	// when you save, returns an id in diagnosisStored to access that social-info

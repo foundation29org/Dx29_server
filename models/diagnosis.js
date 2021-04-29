@@ -20,6 +20,7 @@ const DiagnosisSchema = Schema({
 	infoGenesAndConditionsPhen2Genes: {type: Object, default: []},
 	relatedConditions: {type: Object, default: []},
 	hasVcf: {type: Boolean, default: false},
+	isgen: {type: Boolean, default: true},
 	selectedItemsFilter: {type: Object, default: []},
 	settingExomizer: {type: Object, default: {
         "IsGenome": false,
