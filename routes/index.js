@@ -21,6 +21,7 @@ const phene2GeneserviceCtrl = require('../services/phen2Gene')
 const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
+const f29gatewayCtrl = require('../services/f29gateway')
 
 const diagnosisCtrl = require('../controllers/clinical/diagnosis')
 const diagnosisCasesCtrl = require('../controllers/clinical/diagnosis-clinical')
@@ -191,6 +192,9 @@ api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClin
 
 //service feedback
 api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
+
+//gateway
+api.post('/gateway/Diagnosis/calculate', f29gatewayCtrl.calculateDiagnosis)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
