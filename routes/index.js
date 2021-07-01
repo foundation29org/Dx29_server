@@ -180,13 +180,17 @@ api.post('/testservicemonarch/:userId', auth(roles.UserClinicalSuperAdmin), test
 api.get('/verifyingcaptcha/:token', captchaServiceCtrl.verifyingcaptcha) // no se usa
 
 //services f29ncr
-api.post('/annotate_batch/', auth(roles.UserClinicalSuperAdmin), f29ncrserviceCtrl.getAnnotate_batch)
+api.post('/annotate_batch/', f29ncrserviceCtrl.getAnnotate_batch)
+//api.post('/annotate_batch/', auth(roles.UserClinicalSuperAdmin), f29ncrserviceCtrl.getAnnotate_batch)
 
 //services f29bio
-api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), f29bioserviceCtrl.getTranslationDictionary)
+api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDictionary)
+//api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), f29bioserviceCtrl.getTranslationDictionary)
 
 //services f29azure
-api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
+api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
+//api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
+
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
 
