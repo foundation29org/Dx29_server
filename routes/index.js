@@ -22,6 +22,7 @@ const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
+const sendEmailCtrl = require('../services/sendEmails')
 
 const diagnosisCtrl = require('../controllers/clinical/diagnosis')
 const diagnosisCasesCtrl = require('../controllers/clinical/diagnosis-clinical')
@@ -190,6 +191,8 @@ api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDict
 //services f29azure
 api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
 //api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
+
+api.post('/sendCustomsEmail', sendEmailCtrl.sendResults)
 
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)

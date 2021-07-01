@@ -1354,6 +1354,55 @@ function sendMailDev (params){
   return decoded
 }
 
+function sendMailResults (email, msg, symptoms, diseases){
+
+  const decoded = new Promise((resolve, reject) => {
+
+    //var mydata = JSON.stringify(data);
+    var mailOptions = {};
+    if(msg==''){
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        subject: 'Dx29 results',
+        template: 'send_mail_results/no_msg_en',
+        context: {
+          symptoms : symptoms,
+          diseases : diseases
+        }
+      };
+    }else{
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        subject: 'Dx29 results',
+        template: 'send_mail_results/with_msg_en',
+        context: {
+          msg: msg,
+          symptoms : symptoms,
+          diseases : diseases
+        }
+      };
+    }
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        console.log(info);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -1377,5 +1426,6 @@ module.exports = {
   sendMailErrorEmail,
   sendMailNotificationRequest,
   sendEmailNotifyPermission,
-  sendMailDev
+  sendMailDev,
+  sendMailResults
 }
