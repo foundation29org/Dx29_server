@@ -1359,11 +1359,18 @@ function sendMailResults (email, msg, symptoms, diseases){
   const decoded = new Promise((resolve, reject) => {
 
     //var mydata = JSON.stringify(data);
+
+    var maillistbcc = [
+      'maria.larrabe@foundation29.org'
+    ];
+
     var mailOptions = {};
+
     if(msg==''){
       mailOptions = {
         to: email,
         from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
         subject: 'Dx29 results',
         template: 'send_mail_results/no_msg_en',
         context: {
@@ -1375,6 +1382,7 @@ function sendMailResults (email, msg, symptoms, diseases){
       mailOptions = {
         to: email,
         from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
         subject: 'Dx29 results',
         template: 'send_mail_results/with_msg_en',
         context: {
