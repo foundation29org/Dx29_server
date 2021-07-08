@@ -21,6 +21,8 @@ const phene2GeneserviceCtrl = require('../services/phen2Gene')
 const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
+const f29gatewayCtrl = require('../services/f29gateway')
+const sendEmailCtrl = require('../services/sendEmails')
 
 const diagnosisCtrl = require('../controllers/clinical/diagnosis')
 const diagnosisCasesCtrl = require('../controllers/clinical/diagnosis-clinical')
@@ -179,18 +181,27 @@ api.post('/testservicemonarch/:userId', auth(roles.UserClinicalSuperAdmin), test
 api.get('/verifyingcaptcha/:token', captchaServiceCtrl.verifyingcaptcha) // no se usa
 
 //services f29ncr
-api.post('/annotate_batch/', auth(roles.UserClinicalSuperAdmin), f29ncrserviceCtrl.getAnnotate_batch)
+api.post('/annotate_batch/', f29ncrserviceCtrl.getAnnotate_batch)
+//api.post('/annotate_batch/', auth(roles.UserClinicalSuperAdmin), f29ncrserviceCtrl.getAnnotate_batch)
 
 //services f29bio
-api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), f29bioserviceCtrl.getTranslationDictionary)
+api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDictionary)
+//api.post('/Translation/document/translate', auth(roles.UserClinicalSuperAdmin), f29bioserviceCtrl.getTranslationDictionary)
 
 //services f29azure
-api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
+api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
+//api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
+
+api.post('/sendCustomsEmail', sendEmailCtrl.sendResults)
+
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
 
 //service feedback
 api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
+
+//gateway
+api.post('/gateway/Diagnosis/calculate', f29gatewayCtrl.calculateDiagnosis)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
