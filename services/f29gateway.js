@@ -6,7 +6,7 @@ function calculateDiagnosis (req, res){
   var bodyJson = req.body;
   var options = {
     'method': 'POST',
-    'url': 'http://dx29dev-api.northeurope.cloudapp.azure.com/api/v1/Diagnosis/calculate?filterConditions=false&filterMatches=true',
+    'url': config.dx29Gateway+'/api/v1/Diagnosis/calculate?filterConditions=false&filterMatches=true',
     'headers': {
       'Content-Type': 'application/json'
     },
