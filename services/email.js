@@ -1354,7 +1354,7 @@ function sendMailDev (params){
   return decoded
 }
 
-function sendMailResults (email, msg, symptoms, diseases){
+function sendMailResults (email, msg, symptoms, diseases, lang){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1365,14 +1365,19 @@ function sendMailResults (email, msg, symptoms, diseases){
     ];
 
     var mailOptions = {};
+    var subjectlang = 'Dx29 results';
+
+    if(lang=='es'){
+      subjectlang='Resultados de Dx29';
+    }
 
     if(msg==''){
       mailOptions = {
         to: email,
         from: TRANSPORTER_OPTIONS.auth.user,
         bcc: maillistbcc,
-        subject: 'Dx29 results',
-        template: 'send_mail_results/no_msg_en',
+        subject: subjectlang,
+        template: 'send_mail_results/no_msg_'+lang,
         context: {
           symptoms : symptoms,
           diseases : diseases
@@ -1383,8 +1388,8 @@ function sendMailResults (email, msg, symptoms, diseases){
         to: email,
         from: TRANSPORTER_OPTIONS.auth.user,
         bcc: maillistbcc,
-        subject: 'Dx29 results',
-        template: 'send_mail_results/with_msg_en',
+        subject: subjectlang,
+        template: 'send_mail_results/with_msg_'+lang,
         context: {
           msg: msg,
           symptoms : symptoms,
