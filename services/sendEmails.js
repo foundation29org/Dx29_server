@@ -5,7 +5,7 @@ const serviceEmail = require('./email')
 
 function sendResults (req, res){
   var bodyJson = req.body;
-  serviceEmail.sendMailResults(req.body.email, req.body.msg, req.body.symptoms, req.body.diseases)
+  serviceEmail.sendMailResults(req.body.email, req.body.msg, req.body.symptoms, req.body.diseases, req.body.lang)
     .then(response => {
       res.status(200).send({ message: 'Email sent '})
     })
