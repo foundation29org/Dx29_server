@@ -30,7 +30,7 @@ const blobServiceOpenDx = new storage.BlobServiceClient(
       var mm = now.getMinutes();
       var ss = now.getSeconds();
       var ff = Math.round(now.getMilliseconds()/10);
-      var date='' + y.toString().substr(-2) + (m < 10 ? '0' : '') + m + (d < 10 ? '0' : '') + d + h + mm + ss + ff;
+      var date='' + y.toString().substr(-2) + (m < 10 ? '0' : '') + m + (d < 10 ? '0' : '') + d + (h < 10 ? '0' : '') + h + (mm < 10 ? '0' : '') + mm + (ss < 10 ? '0' : '') + ss + (ff < 10 ? '0' : '') + ff;
       var randomString = makeid(8);
       var fileNameNcr = 'info.json';
       var name = date+randomString;
@@ -46,7 +46,8 @@ const blobServiceOpenDx = new storage.BlobServiceClient(
       var characters       = '0123456789';
       var charactersLength = characters.length;
       for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        result += Math.floor(Math.random() * charactersLength);
+        //result += characters.charAt(Math.floor(Math.random() * charactersLength));
      }
      return result;
   }
