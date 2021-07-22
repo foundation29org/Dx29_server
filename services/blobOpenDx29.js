@@ -35,7 +35,7 @@ const blobServiceOpenDx = new storage.BlobServiceClient(
       var fileNameNcr = 'info.json';
       var name = date+randomString;
       var url = y.toString().substr(-2) +'/'+ (m < 10 ? '0' : '') + m +'/'+ (d < 10 ? '0' : '') + d +'/'+ name;
-      var tempUrl = 'data'+'/'+url;
+      var tempUrl = 'open-data'+'/'+url;
       var result = await createBlob(tempUrl, symptoms, fileNameNcr);
 
       res.status(200).send({token: name, message: 'Done'})
