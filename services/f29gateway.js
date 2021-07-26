@@ -1,12 +1,13 @@
 'use strict'
 const config = require('../config')
 const request = require('request')
-
+//'url': config.dx29Gateway+'/api/v1/Diagnosis/calculate?filterConditions=false&filterMatches=true',
 function calculateDiagnosis (req, res){
+  let lang = req.params.lang
   var bodyJson = req.body;
   var options = {
     'method': 'POST',
-    'url': config.dx29Gateway+'/api/v1/Diagnosis/calculate?filterConditions=false&filterMatches=true',
+    'url': config.dx29Gateway+'/api/v1/Diagnosis/calculate?lang='+lang,
     'headers': {
       'Content-Type': 'application/json'
     },

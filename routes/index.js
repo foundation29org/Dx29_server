@@ -204,7 +204,7 @@ api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClin
 api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
 
 //gateway
-api.post('/gateway/Diagnosis/calculate', f29gatewayCtrl.calculateDiagnosis)
+api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
