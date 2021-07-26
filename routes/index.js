@@ -23,6 +23,7 @@ const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
 const sendEmailCtrl = require('../services/sendEmails')
+const blobOpenDx29Ctrl = require('../services/blobOpenDx29')
 
 const diagnosisCtrl = require('../controllers/clinical/diagnosis')
 const diagnosisCasesCtrl = require('../controllers/clinical/diagnosis-clinical')
@@ -194,6 +195,8 @@ api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
 
 api.post('/sendCustomsEmail', sendEmailCtrl.sendResults)
 
+api.post('/blobOpenDx29', blobOpenDx29Ctrl.createBlobOpenDx29)
+
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
 
@@ -201,7 +204,7 @@ api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClin
 api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sendMsgDev)
 
 //gateway
-api.post('/gateway/Diagnosis/calculate', f29gatewayCtrl.calculateDiagnosis)
+api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
