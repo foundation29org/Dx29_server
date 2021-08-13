@@ -196,6 +196,7 @@ api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
 api.post('/sendCustomsEmail', sendEmailCtrl.sendResults)
 
 api.post('/blobOpenDx29', blobOpenDx29Ctrl.createBlobOpenDx29)
+api.post('/chekedSymptomsOpenDx29', blobOpenDx29Ctrl.chekedSymptomsOpenDx29)
 
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
