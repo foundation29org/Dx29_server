@@ -23,6 +23,28 @@ function calculateDiagnosis (req, res){
   });
 }
 
+function searchDiseases (req, res){
+  //let text = req.params.text
+  let text = req.body.text;
+  let lang = req.body.lang;
+  var options = {
+    'method': 'GET',
+    'url': config.dx29Gateway+'/api/v1/PhenotypeSearch/diseases?text='+text+'&lang='+lang+'&rows=100&fullSearch=true',
+    'headers': {
+      'Content-Type': 'application/json'
+    }
+
+  };
+  request(options, function (error, response) {
+    if (error) {
+      res.status(400).send(error)
+    }else{
+      res.status(200).send(response.body)
+    }
+  });
+}
+
 module.exports = {
-	calculateDiagnosis
+	calculateDiagnosis,
+  searchDiseases
 }
