@@ -29,7 +29,7 @@ function searchDiseases (req, res){
   let lang = req.body.lang;
   var options = {
     'method': 'GET',
-    'url': encodeURI(config.dx29Gateway+'/api/v1/PhenotypeSearch/diseases?text='+text+'&lang='+lang+'&rows=100&fullSearch=true'),
+    'url': encodeURI(config.dx29Gateway+'/api/v3/PhenotypeSearch/diseases?text='+text+'&lang='+lang+'&rows=100&fullSearch=true'),
     'headers': {
       'Content-Type': 'application/json'
     }
