@@ -1416,6 +1416,54 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
   return decoded
 }
 
+function sendRevolution (email, msg, symptoms, diseases, lang){
+
+  const decoded = new Promise((resolve, reject) => {
+
+    //var mydata = JSON.stringify(data);
+
+    var maillistbcc = [
+      'maria.larrabe@foundation29.org'
+    ];
+
+    var mailOptions = {};
+    var subjectlang = 'Dx29 Revolution';
+
+    if(lang=='es'){
+      subjectlang='Revolución de Dx29';
+    }
+
+    mailOptions = {
+      to: email,
+      from: TRANSPORTER_OPTIONS.auth.user,
+      bcc: maillistbcc,
+      subject: subjectlang,
+      template: 'send_mail_revolution/_'+lang,
+      context: {
+        msg: msg,
+        symptoms : symptoms,
+        diseases : diseases
+      }
+    };
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        console.log(info);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
 module.exports = {
 	sendMailVerifyEmail,
   sendMailRecoverPass,
@@ -1440,5 +1488,6 @@ module.exports = {
   sendMailNotificationRequest,
   sendEmailNotifyPermission,
   sendMailDev,
-  sendMailResults
+  sendMailResults,
+  sendRevolution
 }

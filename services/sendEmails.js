@@ -15,6 +15,19 @@ function sendResults (req, res){
 
 }
 
+function sendRevolution (req, res){
+  var bodyJson = req.body;
+  serviceEmail.sendRevolution(req.body.email, req.body.msg, req.body.symptoms, req.body.diseases, req.body.lang)
+    .then(response => {
+      res.status(200).send({ message: 'Email sent '})
+    })
+    .catch(response => {
+      res.status(400).send({ message: 'Fail sending email'})
+    })
+
+}
+
 module.exports = {
-	sendResults
+	sendResults,
+  sendRevolution
 }
