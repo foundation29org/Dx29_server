@@ -207,6 +207,7 @@ api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sen
 //gateway
 api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 api.post('/gateway/search/disease/', f29gatewayCtrl.searchDiseases)
+api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
