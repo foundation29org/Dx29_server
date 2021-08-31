@@ -1416,7 +1416,7 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
   return decoded
 }
 
-function sendRevolution (email, msg, symptoms, diseases, lang){
+function sendRevolution (email, lang){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1438,12 +1438,7 @@ function sendRevolution (email, msg, symptoms, diseases, lang){
       from: TRANSPORTER_OPTIONS.auth.user,
       bcc: maillistbcc,
       subject: subjectlang,
-      template: 'send_mail_revolution/_'+lang,
-      context: {
-        msg: msg,
-        symptoms : symptoms,
-        diseases : diseases
-      }
+      template: 'send_mail_revolution/_'+lang
     };
 
 
