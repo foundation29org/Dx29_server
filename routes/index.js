@@ -193,7 +193,8 @@ api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDict
 api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
 //api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
 
-api.post('/sendCustomsEmail', sendEmailCtrl.sendResults)
+api.post('/sendEmailResults', sendEmailCtrl.sendResults)
+api.post('/sendEmailRevolution', sendEmailCtrl.sendRevolution)
 
 api.post('/blobOpenDx29', blobOpenDx29Ctrl.createBlobOpenDx29)
 api.post('/chekedSymptomsOpenDx29', blobOpenDx29Ctrl.chekedSymptomsOpenDx29)
@@ -207,6 +208,7 @@ api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sen
 //gateway
 api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 api.post('/gateway/search/disease/', f29gatewayCtrl.searchDiseases)
+api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)

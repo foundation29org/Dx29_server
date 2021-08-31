@@ -23,6 +23,27 @@ function calculateDiagnosis (req, res){
   });
 }
 
+function searchSymptoms (req, res){
+  //let text = req.params.text
+  let text = req.body.text;
+  let lang = req.body.lang;
+  var options = {
+    'method': 'GET',
+    'url': encodeURI(config.dx29Gateway+'/api/v3/PhenotypeSearch/terms?text='+text+'&lang='+lang+'&rows=200&fullSearch=true'),
+    'headers': {
+      'Content-Type': 'application/json'
+    }
+
+  };
+  request(options, function (error, response) {
+    if (error) {
+      res.status(400).send(error)
+    }else{
+      res.status(200).send(response.body)
+    }
+  });
+}
+
 function searchDiseases (req, res){
   //let text = req.params.text
   let text = req.body.text;
@@ -46,5 +67,6 @@ function searchDiseases (req, res){
 
 module.exports = {
 	calculateDiagnosis,
+  searchSymptoms,
   searchDiseases
 }
