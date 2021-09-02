@@ -39,22 +39,6 @@ function callwiki (req, res){
 	});
 }
 
-function callwiki2 (req, res){
-	wiki({ apiUrl: 'https://es.wikipedia.org/w/api.php' })
-	.page('Síndrome de Dravet')
-	//.then(page => page.info())
-	.then(page => page.content())
-	.then(function(page) {
-   // cumplimiento
-	 res.status(200).send(page)
-	 console.log(page);
-  }, function(reason) {
-  // rechazo
-	});
-
-}
-
-
 module.exports = {
 	callwikiSearch,
 	callwiki
