@@ -24,6 +24,7 @@ const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
 const sendEmailCtrl = require('../services/sendEmails')
 const blobOpenDx29Ctrl = require('../services/blobOpenDx29')
+const wikiCtrl = require('../services/wikipedia')
 
 const diagnosisCtrl = require('../controllers/clinical/diagnosis')
 const diagnosisCasesCtrl = require('../controllers/clinical/diagnosis-clinical')
@@ -209,6 +210,10 @@ api.post('/feedbackdev', auth(roles.UserClinicalSuperAdmin), feedbackDevCtrl.sen
 api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 api.post('/gateway/search/disease/', f29gatewayCtrl.searchDiseases)
 api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
+
+//wikipedia
+api.post('/wikiSearch', wikiCtrl.callwikiSearch)
+api.post('/wiki', wikiCtrl.callwiki)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
