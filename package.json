@@ -35,7 +35,8 @@
     "mongoose": "^4.13.1",
     "nodemailer": "^4.4.0",
     "nodemailer-express-handlebars": "^2.0.0",
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "wikijs": "^6.3.2"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"
