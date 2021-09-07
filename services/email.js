@@ -1416,7 +1416,7 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
   return decoded
 }
 
-function sendRevolution (email, lang){
+function sendRevolution (email, lang, bodyAttachments){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1433,15 +1433,25 @@ function sendRevolution (email, lang){
       subjectlang='Revolución de Dx29';
     }
 
-    mailOptions = {
-      to: email,
-      from: TRANSPORTER_OPTIONS.auth.user,
-      bcc: maillistbcc,
-      subject: subjectlang,
-      template: 'send_mail_revolution/_'+lang
-    };
-
-
+    if (bodyAttachments !=undefined){
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'send_mail_revolution/_'+lang,
+        attachments: {filename: 'timeline.jpg', path: bodyAttachments} 
+      };
+    }
+    else{
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'send_mail_revolution/_'+lang
+      };
+    }
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
