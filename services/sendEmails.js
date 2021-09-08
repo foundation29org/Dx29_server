@@ -17,7 +17,7 @@ function sendResults (req, res){
 
 function sendRevolution (req, res){
   var bodyJson = req.body;
-  serviceEmail.sendRevolution(req.body.email, req.body.lang)
+  serviceEmail.sendRevolution(req.body.email, req.body.lang, req.body.attachments)
     .then(response => {
       res.status(200).send({ message: 'Email sent '})
     })
