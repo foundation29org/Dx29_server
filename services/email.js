@@ -1421,6 +1421,8 @@ function sendRevolution (email, lang, bodyAttachments){
   const decoded = new Promise((resolve, reject) => {
 
     //var mydata = JSON.stringify(data);
+    var actualDate = Date.now();
+    console.log("sendRevolution");
 
     var maillistbcc = [
       'maria.larrabe@foundation29.org'
@@ -1434,13 +1436,14 @@ function sendRevolution (email, lang, bodyAttachments){
     }
 
     if (bodyAttachments !=undefined){
+      console.log("bodyAttachments!=undefined");
       mailOptions = {
         to: email,
         from: TRANSPORTER_OPTIONS.auth.user,
         bcc: maillistbcc,
         subject: subjectlang,
         template: 'send_mail_revolution/_'+lang,
-        attachments: {filename: 'timeline.jpg', path: bodyAttachments} 
+        attachments: {filename: 'Dx29_Timeline_' + actualDate +'.pdf', path: bodyAttachments, encoding: 'base64'} 
       };
     }
     else{
@@ -1454,8 +1457,8 @@ function sendRevolution (email, lang, bodyAttachments){
     }
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
-        console.log(error);
-        console.log(info);
+        //console.log(error);
+        //console.log(info);
         reject({
           status: 401,
           message: 'Fail sending email'
