@@ -1433,25 +1433,14 @@ function sendRevolution (email, lang, bodyAttachments){
       subjectlang='Revolución de Dx29';
     }
 
-    if (bodyAttachments !=undefined){
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'send_mail_revolution/_'+lang,
-        attachments: {filename: 'timeline.jpg', path: bodyAttachments} 
-      };
-    }
-    else{
-      mailOptions = {
-        to: email,
-        from: TRANSPORTER_OPTIONS.auth.user,
-        bcc: maillistbcc,
-        subject: subjectlang,
-        template: 'send_mail_revolution/_'+lang
-      };
-    }
+    mailOptions = {
+      to: email,
+      from: TRANSPORTER_OPTIONS.auth.user,
+      bcc: maillistbcc,
+      subject: subjectlang,
+      template: 'send_mail_revolution/_'+lang
+    };
+    
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
