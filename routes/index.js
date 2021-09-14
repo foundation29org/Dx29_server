@@ -22,6 +22,7 @@ const f29ncrserviceCtrl = require('../services/f29ncr')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
+const f29patientgroupsCtrl = require('../services/f29patientGroups')
 const sendEmailCtrl = require('../services/sendEmails')
 const blobOpenDx29Ctrl = require('../services/blobOpenDx29')
 const wikiCtrl = require('../services/wikipedia')
@@ -214,6 +215,9 @@ api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
 //wikipedia
 api.post('/wikiSearch', wikiCtrl.callwikiSearch)
 api.post('/wiki', wikiCtrl.callwiki)
+
+//patientGroups
+api.get('/patientgroups/:idDisease', f29patientgroupsCtrl.getPatientGroups)
 
 /*api.get('/testToken', auth, (req, res) => {
 	res.status(200).send(true)
