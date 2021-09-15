@@ -200,6 +200,8 @@ api.post('/sendEmailRevolution', sendEmailCtrl.sendRevolution)
 
 api.post('/blobOpenDx29', blobOpenDx29Ctrl.createBlobOpenDx29)
 api.post('/chekedSymptomsOpenDx29', blobOpenDx29Ctrl.chekedSymptomsOpenDx29)
+api.post('/blobOpenDx29Timeline', blobOpenDx29Ctrl.createBlobOpenTimelineDx29)
+
 
 api.post('/getTranslationDictionary', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getTranslationDictionary)
 api.get('/getAzureBlobSasTokenWithContainer/:containerName', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getAzureBlobSasTokenWithContainer)
