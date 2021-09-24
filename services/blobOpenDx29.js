@@ -73,7 +73,29 @@ const blobServiceOpenDx = new storage.BlobServiceClient(
       res.status(200).send({token: name, message: 'Done'})
   }
 
+  async function createBlobOpenTimelineDx29(req, res){
+    var symptoms = JSON.stringify(req.body);
+    var now = new Date();
+      var y = now.getFullYear();
+      var m = now.getMonth() + 1;
+      var d = now.getDate();
+      var h = now.getHours();
+      var mm = now.getMinutes();
+      var ss = now.getSeconds();
+      var ff = Math.round(now.getMilliseconds()/10);
+      var date='' + y.toString().substr(-2) + (m < 10 ? '0' : '') + m + (d < 10 ? '0' : '') + d + (h < 10 ? '0' : '') + h + (mm < 10 ? '0' : '') + mm + (ss < 10 ? '0' : '') + ss + (ff < 10 ? '0' : '') + ff;
+      var randomString = makeid(8);
+      var fileNameNcr = 'info.json';
+      var name = date+randomString;
+      var url = y.toString().substr(-2) +'/'+ (m < 10 ? '0' : '') + m +'/'+ (d < 10 ? '0' : '') + d +'/'+ name;
+      var tempUrl = 'open-data-timeline'+'/'+url;
+      var result = await createBlob(tempUrl, symptoms, fileNameNcr);
+
+      res.status(200).send({token: name, message: 'Done'})
+  }
+
 module.exports = {
   createBlobOpenDx29,
+  createBlobOpenTimelineDx29,
   chekedSymptomsOpenDx29
 }
