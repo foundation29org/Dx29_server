@@ -1354,7 +1354,7 @@ function sendMailDev (params){
   return decoded
 }
 
-function sendMailResults (email, msg, symptoms, diseases, lang){
+function sendMailResults (email, msg, symptoms, diseases, lang, dateHeader){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1379,6 +1379,7 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
         subject: subjectlang,
         template: 'send_mail_results/no_msg_'+lang,
         context: {
+          dateHeader: dateHeader,
           symptoms : symptoms,
           diseases : diseases
         }
@@ -1391,6 +1392,7 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
         subject: subjectlang,
         template: 'send_mail_results/with_msg_'+lang,
         context: {
+          dateHeader: dateHeader,
           msg: msg,
           symptoms : symptoms,
           diseases : diseases
