@@ -195,7 +195,8 @@ api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDict
 api.post('/getDetectLanguage', f29azureserviceCtrl.getDetectLanguage)
 //api.post('/getDetectLanguage', auth(roles.UserClinicalSuperAdmin), f29azureserviceCtrl.getDetectLanguage)
 
-api.post('/sendEmailResults', sendEmailCtrl.sendResults)
+api.post('/sendEmailResultsUndiagnosed', sendEmailCtrl.sendResultsUndiagnosed)
+api.post('/sendEmailResultsDiagnosed', sendEmailCtrl.sendResultsDiagnosed)
 api.post('/sendEmailRevolution', sendEmailCtrl.sendRevolution)
 
 api.post('/blobOpenDx29', blobOpenDx29Ctrl.createBlobOpenDx29)
