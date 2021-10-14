@@ -1354,7 +1354,7 @@ function sendMailDev (params){
   return decoded
 }
 
-function sendMailResults (email, msg, symptoms, diseases, lang){
+function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateHeader){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1377,8 +1377,9 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
         from: TRANSPORTER_OPTIONS.auth.user,
         bcc: maillistbcc,
         subject: subjectlang,
-        template: 'send_mail_results/no_msg_'+lang,
+        template: 'send_mail_results_und/no_msg_'+lang,
         context: {
+          dateHeader: dateHeader,
           symptoms : symptoms,
           diseases : diseases
         }
@@ -1389,11 +1390,76 @@ function sendMailResults (email, msg, symptoms, diseases, lang){
         from: TRANSPORTER_OPTIONS.auth.user,
         bcc: maillistbcc,
         subject: subjectlang,
-        template: 'send_mail_results/with_msg_'+lang,
+        template: 'send_mail_results_und/with_msg_'+lang,
         context: {
+          dateHeader: dateHeader,
           msg: msg,
           symptoms : symptoms,
           diseases : diseases
+        }
+      };
+    }
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        console.log(info);
+        reject({
+          status: 401,
+          message: 'Fail sending email'
+        })
+      } else {
+        resolve("ok")
+      }
+    });
+
+  });
+  return decoded
+}
+
+function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHeader){
+
+  const decoded = new Promise((resolve, reject) => {
+
+    //var mydata = JSON.stringify(data);
+
+    var maillistbcc = [
+      'maria.larrabe@foundation29.org'
+    ];
+
+    var mailOptions = {};
+    var subjectlang = 'Dx29 results';
+
+    if(lang=='es'){
+      subjectlang='Resultados de Dx29';
+    }
+
+    if(msg==''){
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'send_mail_results_diag/no_msg_'+lang,
+        context: {
+          dateHeader: dateHeader,
+          symptoms : symptoms,
+          disease : disease
+        }
+      };
+    }else{
+      mailOptions = {
+        to: email,
+        from: TRANSPORTER_OPTIONS.auth.user,
+        bcc: maillistbcc,
+        subject: subjectlang,
+        template: 'send_mail_results_diag/with_msg_'+lang,
+        context: {
+          dateHeader: dateHeader,
+          msg: msg,
+          symptoms : symptoms,
+          disease : disease
         }
       };
     }
@@ -1482,6 +1548,7 @@ module.exports = {
   sendMailNotificationRequest,
   sendEmailNotifyPermission,
   sendMailDev,
-  sendMailResults,
+  sendMailResultsUndiagnosed,
+  sendMailResultsDiagnosed,
   sendRevolution
 }
