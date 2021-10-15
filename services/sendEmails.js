@@ -5,7 +5,7 @@ const serviceEmail = require('./email')
 
 function sendResultsUndiagnosed (req, res){
   var bodyJson = req.body;
-  serviceEmail.sendMailResultsUndiagnosed(req.body.email, req.body.msg, req.body.symptoms, req.body.diseases, req.body.lang, req.body.dateHeader)
+  serviceEmail.sendMailResultsUndiagnosed(req.body.email, req.body.msg, req.body.symptoms, req.body.diseases, req.body.lang, req.body.dateHeader, req.body.pdfBase64)
     .then(response => {
       res.status(200).send({ message: 'Email sent '})
     })
@@ -17,7 +17,7 @@ function sendResultsUndiagnosed (req, res){
 
 function sendResultsDiagnosed (req, res){
   var bodyJson = req.body;
-  serviceEmail.sendMailResultsDiagnosed(req.body.email, req.body.msg, req.body.symptoms, req.body.disease, req.body.lang, req.body.dateHeader)
+  serviceEmail.sendMailResultsDiagnosed(req.body.email, req.body.msg, req.body.symptoms, req.body.disease, req.body.lang, req.body.dateHeader, req.body.pdfBase64)
     .then(response => {
       res.status(200).send({ message: 'Email sent '})
     })
