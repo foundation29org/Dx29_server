@@ -1354,7 +1354,7 @@ function sendMailDev (params){
   return decoded
 }
 
-function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateHeader){
+function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateHeader, pdfBase64){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1371,6 +1371,17 @@ function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateH
       subjectlang='Resultados de Dx29';
     }
 
+    const ts_hms = new Date();    
+    var stringDate = 
+      ts_hms.getFullYear() + '-' + 
+      ("0" + (ts_hms.getMonth() + 1)).slice(-2) + '-' + 
+      ("0" + (ts_hms.getDate())).slice(-2) + '_' +
+      ("0" + ts_hms.getHours()).slice(-2) + '' +
+      ("0" + ts_hms.getMinutes()).slice(-2) + '' +
+      ("0" + ts_hms.getSeconds()).slice(-2);
+      var fileName = 'Dx29_Report_'+stringDate+'.pdf';
+
+
     if(msg==''){
       mailOptions = {
         to: email,
@@ -1382,7 +1393,12 @@ function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateH
           dateHeader: dateHeader,
           symptoms : symptoms,
           diseases : diseases
-        }
+        },
+        attachments: [
+        {   // utf-8 string as an attachment
+          filename: fileName,
+          path: pdfBase64
+        }]
       };
     }else{
       mailOptions = {
@@ -1396,7 +1412,12 @@ function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateH
           msg: msg,
           symptoms : symptoms,
           diseases : diseases
-        }
+        },
+        attachments: [
+        {   // utf-8 string as an attachment
+          filename: fileName,
+          path: pdfBase64
+        }]
       };
     }
 
@@ -1418,7 +1439,7 @@ function sendMailResultsUndiagnosed (email, msg, symptoms, diseases, lang, dateH
   return decoded
 }
 
-function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHeader){
+function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHeader, pdfBase64){
 
   const decoded = new Promise((resolve, reject) => {
 
@@ -1435,6 +1456,17 @@ function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHead
       subjectlang='Resultados de Dx29';
     }
 
+
+    const ts_hms = new Date();    
+    var stringDate = 
+      ts_hms.getFullYear() + '-' + 
+      ("0" + (ts_hms.getMonth() + 1)).slice(-2) + '-' + 
+      ("0" + (ts_hms.getDate())).slice(-2) + '_' +
+      ("0" + ts_hms.getHours()).slice(-2) + '' +
+      ("0" + ts_hms.getMinutes()).slice(-2) + '' +
+      ("0" + ts_hms.getSeconds()).slice(-2);
+      var fileName = 'Dx29_Report_'+stringDate+'.pdf';
+
     if(msg==''){
       mailOptions = {
         to: email,
@@ -1446,7 +1478,12 @@ function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHead
           dateHeader: dateHeader,
           symptoms : symptoms,
           disease : disease
-        }
+        },
+        attachments: [
+        {   // utf-8 string as an attachment
+          filename: fileName,
+          path: pdfBase64
+        }]
       };
     }else{
       mailOptions = {
@@ -1460,7 +1497,12 @@ function sendMailResultsDiagnosed (email, msg, symptoms, disease, lang, dateHead
           msg: msg,
           symptoms : symptoms,
           disease : disease
-        }
+        },
+        attachments: [
+        {   // utf-8 string as an attachment
+          filename: fileName,
+          path: pdfBase64
+        }]
       };
     }
 
