@@ -1,6 +1,5 @@
 'use strict'
 
-const crypt = require('./crypt')
 const config = require('../config')
 var azure = require('azure-storage');
 const storage = require("@azure/storage-blob")
