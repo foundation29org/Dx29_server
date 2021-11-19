@@ -1,15 +1,11 @@
 'use strict'
-//import wiki from 'wikijs';
 const wiki = require('wikijs').default;
-
 const request = require("request");
 
 function callwikiSearch (req, res){
 	let text = encodeURIComponent(req.body.text);
 	let lang = req.body.lang;
 	const url =  `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&srlimit=20&srsearch=${text}`
-	//var url = 'https://'+lang+'.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&srlimit=20&srsearch='+text;
-	console.log(url);
 	var options = {
 	  'method': 'GET',
 	  'url': url

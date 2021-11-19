@@ -1,7 +1,7 @@
 'use strict'
 const config = require('../config')
 const request = require('request')
-//'url': config.dx29Gateway+'/api/v1/Diagnosis/calculate?filterConditions=false&filterMatches=true',
+
 function calculateDiagnosis (req, res){
   let lang = req.params.lang
   var bodyJson = req.body;
@@ -24,13 +24,11 @@ function calculateDiagnosis (req, res){
 }
 
 function searchSymptoms (req, res){
-  //let text = req.params.text
   let text = req.body.text;
   let lang = req.body.lang;
   var options = {
     'method': 'GET',
     'url': encodeURI(config.dx29Gateway+'/api/v4/PhenotypeSearch/terms?text='+text+'&lang='+lang+'&rows=20'),
-    //'url': encodeURI(config.dx29Gateway+'/api/v3/PhenotypeSearch/terms?text='+text+'&lang='+lang+'&rows=200&fullSearch=true'),
     'headers': {
       'Content-Type': 'application/json'
     }
@@ -52,7 +50,6 @@ function searchDiseases (req, res){
   var options = {
     'method': 'GET',
     'url': encodeURI(config.dx29Gateway+'/api/v4/PhenotypeSearch/diseases?text='+text+'&lang='+lang+'&rows=20'),
-    //'url': encodeURI(config.dx29Gateway+'/api/v3/PhenotypeSearch/diseases?text='+text+'&lang='+lang+'&rows=100&fullSearch=true'),
     'headers': {
       'Content-Type': 'application/json'
     }

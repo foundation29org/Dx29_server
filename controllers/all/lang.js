@@ -4,8 +4,6 @@
 
 // add the lang model
 const Lang = require('../../models/lang')
-const User = require('../../models/user')
-const crypt = require('../../services/crypt')
 
 /**
  * @api {get} https://health29.org/api/langs/ Get languages
