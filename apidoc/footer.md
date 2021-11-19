@@ -1,6 +1,6 @@
-# About Health29
+# About Dx29
 
->Health29 is an online platform created by the Fundación 29 de Febrero ("Foundation 29"), in order to facilitate research and help with the treatment of the disease. To do this, a database of patients will be created, being intrinsic to the use of the platform the treatment of personal health data. In case you do not give your express consent through the marking of the corresponding box at the time of registration, you can not become a user of the platform.
+>Dx29 is an online platform created by the Fundación 29 de Febrero ("Foundation 29"), in order to facilitate research and help with the treatment of the disease. To do this, a database of patients will be created, being intrinsic to the use of the platform the treatment of personal health data. In case you do not give your express consent through the marking of the corresponding box at the time of registration, you can not become a user of the platform.
 
 ### What is Foundation29?
 

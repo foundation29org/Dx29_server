@@ -2,20 +2,6 @@
 
 const config = require('../config')
 const request = require('request')
-const storage = require("@azure/storage-blob")
-const accountnameGenomics ="blobgenomics";
-const keyGenomics = config.keyGenomics;
-const sharedKeyCredentialGenomics = new storage.StorageSharedKeyCredential(accountnameGenomics,keyGenomics);
-const blobServiceClientGenomics = new storage.BlobServiceClient(
-    // When using AnonymousCredential, following url should include a valid SAS or support public access
-    `https://${accountnameGenomics}.blob.core.windows.net`,
-    sharedKeyCredentialGenomics
-  );
-
-var azure = require('azure-storage');
-
-var blobService = azure
-      .createBlobService("blobgenomics",keyGenomics);
 
 function getDetectLanguage (req, res){
   var jsonText = req.body;

@@ -23,7 +23,6 @@ module.exports = {
   ncrBearer: process.env.NCRBEARER, // If you are developing, add a second parameter with "||" and the ncr bearer, in prod the first
   translationKey: process.env.TRANSLATION_KEY, // If you are developing, add a second parameter with "||" and the translation service key, in prod the first
   translationCategory: process.env.TRANSLATION_CATEGORY, // If you are developing, add a second parameter with "||" and a translation category, in prod the first,
-  keyGenomics: undefined, //Azure Storage account KEY. Use access keys to authenticate your applications when making requests to this Azure storage account.
   dx29Gateway: process.env.DX29GATEWAY // DX29 API GATEWAY,
   openDxAccessToken:{
     key: process.env.OPENDXBLOBKEY, //Azure Storage account KEY. Use access keys to authenticate your applications when making requests to this Azure storage account.
