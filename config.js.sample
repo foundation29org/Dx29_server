@@ -18,11 +18,6 @@ module.exports = {
     sasToken: undefined,
     blobAccountUrl: undefined,
   },
-
-  blobData:{ // Blob data information: {storageAccount:<account>,storageAccessKey: "<storage access key>"}
-    storageAccount:undefined,
-    storageAccessKey:undefined
-  },
   f29bio: undefined, // f29Bio sevice URL
   f29ncr: undefined, // f29Bio sevice URL
   ncrBearer: process.env.NCRBEARER, // If you are developing, add a second parameter with "||" and the ncr bearer, in prod the first
