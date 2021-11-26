@@ -8,7 +8,8 @@ function getTranslationDictionary (req, res){
   var category = config.translationCategory;
   var segments = req.body.segments;
   var translationKey = config.translationKey;
-  request.post({url:config.f29bio+'/api/Translation/document/translate?lan='+lang+'&category='+category,json: true,headers: {'authorization': translationKey},body:segments}, (error, response, body) => {
+  //request.post({url:config.f29bio+'/api/Translation/document/translate?lan='+lang+'&category='+category,json: true,headers: {'authorization': translationKey},body:segments}, (error, response, body) => {
+  request.post({url:'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&lan='+lang+'&category='+category,json: true,headers: {'Ocp-Apim-Subscription-Key': translationKey},body:segments}, (error, response, body) => {
     if (error) {
       console.error(error)
       res.status(500).send(error)
