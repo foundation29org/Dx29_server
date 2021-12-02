@@ -5,6 +5,7 @@ const express = require('express')
 
 const langCtrl = require('../controllers/all/lang')
 const f29ncrserviceCtrl = require('../services/f29ncr')
+const f29apiv2serviceCtrl = require('../services/f29apiv2')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
@@ -24,6 +25,9 @@ api.post('/homesupport/', supportCtrl.sendMsgLogoutSupport)
 
 //services f29ncr
 api.post('/annotate_batch/', f29ncrserviceCtrl.getAnnotate_batch)
+
+//services dx29V2API
+api.post('/callTextAnalytics', f29apiv2serviceCtrl.callTextAnalytics)
 
 //services f29bio
 api.post('/Translation/document/translate', f29bioserviceCtrl.getTranslationDictionary)

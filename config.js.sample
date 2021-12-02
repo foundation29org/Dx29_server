@@ -27,5 +27,6 @@ module.exports = {
   openDxAccessToken:{
     key: process.env.OPENDXBLOBKEY, //Azure Storage account KEY. Use access keys to authenticate your applications when making requests to this Azure storage account.
     blobAccount: process.env.OPENDXBLOBNAME
-  }
+  },
+  dxv2api: undefined, // dxv2 sevice URL
 }
