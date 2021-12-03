@@ -6,7 +6,7 @@ const request = require('request')
 function callTextAnalytics (req, res){
   var jsonText = req.body;
   var ncrBearer = 'Bearer '+ config.ncrBearer;
-  request.post({url:config.dxv2api+'/api/v1/PhenReports/process',json: true,headers: {'Authorization': config.dxv2apiAuth},body:textf}, (error, response, body) => {
+  request.post({url:config.dxv2api+'/api/v1/PhenReports/process',json: true,headers: {'Authorization': config.dxv2apiAuth},body:jsonText}, (error, response, body) => {
   //request.post({url:config.dxv2api+'/api/v1/PhenReports/process',json: true,body:jsonText}, (error, response, body) => {
     if (error) {
       console.error(error)
