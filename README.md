@@ -6,6 +6,7 @@ Dx29 server
 ===============================================================================================================================
 
 [![Build Status](https://f29.visualstudio.com/Health29%20for%20Diagnosis/_apis/build/status/dx29%20-%20PROD%20-%20Server%20-%20CI?branchName=master)](https://f29.visualstudio.com/Health29%20for%20Diagnosis/_build/latest?definitionId=47&branchName=master)   [![Deployment status](https://f29.vsrm.visualstudio.com/_apis/public/Release/badge/88bb841e-8756-480d-9840-a24ba6dd4cb4/16/17)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 #### 1. Overview 
 
