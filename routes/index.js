@@ -9,6 +9,7 @@ const f29apiv2serviceCtrl = require('../services/f29apiv2')
 const f29bioserviceCtrl = require('../services/f29bio')
 const f29azureserviceCtrl = require('../services/f29azure')
 const f29gatewayCtrl = require('../services/f29gateway')
+const dx29webCtrl = require('../services/dx29web')
 const f29patientgroupsCtrl = require('../services/f29patientGroups')
 const sendEmailCtrl = require('../services/sendEmails')
 const blobOpenDx29Ctrl = require('../services/blobOpenDx29')
@@ -47,6 +48,10 @@ api.post('/blobOpenDx29Timeline', blobOpenDx29Ctrl.createBlobOpenTimelineDx29)
 api.post('/gateway/Diagnosis/calculate/:lang', f29gatewayCtrl.calculateDiagnosis)
 api.post('/gateway/search/disease/', f29gatewayCtrl.searchDiseases)
 api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
+
+// Dx29 Web F29Bio proxy
+api.post('/dx29web/F29Bio/:resource/:lang', dx29webCtrl.proxyF29Bio)
+api.post('/dx29web/F29Bio/disease/:resource/:lang', dx29webCtrl.proxyF29Bio)
 
 //wikipedia
 api.post('/wikiSearch', wikiCtrl.callwikiSearch)
