@@ -5,9 +5,19 @@ const request = require('request')
 function proxyF29Bio (req, res) {
   const lang = req.params.lang
   const resource = req.params.resource
+  proxy(req, res, resource + '/' + lang)
+}
+
+function proxyDiseaseF29Bio (req, res) {
+  const lang = req.params.lang
+  const resource = req.params.resource
+  proxy(req, res, 'disease/' + resource + '/' + lang)
+}
+
+function proxy (req, res, path) {
   const options = {
     method: 'POST',
-    url: config.dx29Web + '/api/v1/F29Bio/' + resource + '/' + lang,
+    url: config.dx29Web + '/api/v1/F29Bio/' + path,
     headers: {
       'Content-Type': 'application/json'
     },
@@ -24,5 +34,6 @@ function proxyF29Bio (req, res) {
 }
 
 module.exports = {
-  proxyF29Bio
+  proxyF29Bio,
+  proxyDiseaseF29Bio
 }

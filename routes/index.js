@@ -50,8 +50,8 @@ api.post('/gateway/search/disease/', f29gatewayCtrl.searchDiseases)
 api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
 
 // Dx29 Web F29Bio proxy
+api.post('/dx29web/F29Bio/disease/:resource/:lang', dx29webCtrl.proxyDiseaseF29Bio)
 api.post('/dx29web/F29Bio/:resource/:lang', dx29webCtrl.proxyF29Bio)
-api.post('/dx29web/F29Bio/disease/:resource/:lang', dx29webCtrl.proxyF29Bio)
 
 //wikipedia
 api.post('/wikiSearch', wikiCtrl.callwikiSearch)
