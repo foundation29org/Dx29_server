@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('../config')
-const request = require('request')
 const storage = require("@azure/storage-blob")
 const accountnameOpenDx =config.openDxAccessToken.blobAccount;
 const keyOpenDx = config.openDxAccessToken.key;

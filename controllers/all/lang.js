@@ -51,7 +51,7 @@ const Lang = require('../../models/lang')
  * ]
  */
 function getLangs (req, res){
-	Lang.find({}, function(err, langs) {
+	Lang.find({}).then((langs) => {
     var listLangs = [];
 
 		if(langs!=undefined){
@@ -63,6 +63,8 @@ function getLangs (req, res){
 	    });
 		}
     res.status(200).send(listLangs)
+  }).catch(() => {
+    res.status(200).send([])
   });
 }
 
