@@ -15,18 +15,16 @@ function sendMsgLogoutSupport(req, res){
 			support.createdBy = "5c77d0492f45d6006c142ab3";
 			support.files = []
 			//guardamos los valores en BD y enviamos Email
-			support.save((err, supportStored) => {
-				if (err) {
-					return res.status(500).send({ message: 'Error saving the msg'})
-				}
-				serviceEmail.sendMailSupport(req.body.email,'en','User', supportStored)
-					.then(response => {
+			support.save().then((supportStored) => {
+				return serviceEmail.sendMailSupport(req.body.email,'en','User', supportStored)
+					.then(() => {
 						return res.status(200).send({ message: 'Email sent'})
 					})
-					.catch(response => {
-						//create user, but Failed sending email.
+					.catch(() => {
 						res.status(500).send({ message: 'Fail sending email'})
 					})
+			}).catch(() => {
+				res.status(500).send({ message: 'Error saving the msg'})
 			})
 }
 

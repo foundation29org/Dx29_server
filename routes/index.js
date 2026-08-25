@@ -53,6 +53,9 @@ api.post('/gateway/search/symptoms/', f29gatewayCtrl.searchSymptoms)
 api.post('/dx29web/F29Bio/disease/:resource/:lang', dx29webCtrl.proxyDiseaseF29Bio)
 api.post('/dx29web/F29Bio/:resource/:lang', dx29webCtrl.proxyF29Bio)
 
+// Document parser proxy to the ACA Gateway
+api.put('/dx29web/Document/Parse', dx29webCtrl.proxyDocumentParse)
+
 //wikipedia
 api.post('/wikiSearch', wikiCtrl.callwikiSearch)
 api.post('/wiki', wikiCtrl.callwiki)
