@@ -22,10 +22,13 @@ module.exports = {
   ncrBearer: process.env.NCRBEARER, // If you are developing, add a second parameter with "||" and the ncr bearer, in prod the first
   translationKey: process.env.TRANSLATION_KEY, // If you are developing, add a second parameter with "||" and the translation service key, in prod the first
   translationCategory: process.env.TRANSLATION_CATEGORY, // If you are developing, add a second parameter with "||" and a translation category, in prod the first,
-  dx29Gateway: process.env.DX29GATEWAY // DX29 API GATEWAY,
+  dx29Gateway: process.env.DX29GATEWAY, // ACA Gateway, e.g. https://dx29-apigateway.<env>.northeurope.azurecontainerapps.io
+  dx29Web: process.env.DX29WEB, // public Dx29.Web host, e.g. https://app.dx29.ai
+  dx29WebApiAuth: process.env.DX29WEBAPI_AUTH || process.env.DXV2AUTH, // Annotations Authorization header for PhenReports/process
   openDxAccessToken:{
     key: process.env.OPENDXBLOBKEY, //Azure Storage account KEY. Use access keys to authenticate your applications when making requests to this Azure storage account.
     blobAccount: process.env.OPENDXBLOBNAME
   },
-  dxv2api: undefined, // dxv2 sevice URL
+  dxv2api: process.env.DXV2, // legacy dxv2 URL (retired)
+  dxv2apiAuth: process.env.DXV2AUTH
 }

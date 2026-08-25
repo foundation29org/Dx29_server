@@ -1,24 +1,24 @@
 'use strict'
 
 const config = require('../config')
-const request = require('request')
+const { jsonRequest } = require('./httpClient')
 
 function callTextAnalytics (req, res){
-  var jsonText = req.body;
-  var ncrBearer = 'Bearer '+ config.ncrBearer;
-  request.post({url:config.dxv2api+'/api/v1/PhenReports/process',json: true,headers: {'Authorization': config.dxv2apiAuth},body:jsonText}, (error, response, body) => {
-  //request.post({url:config.dxv2api+'/api/v1/PhenReports/process',json: true,body:jsonText}, (error, response, body) => {
-    if (error) {
-      console.error(error)
-      res.status(500).send(error)
+  jsonRequest({
+    method: 'POST',
+    url: config.dx29Web + '/api/v1/PhenReports/process',
+    headers: { 'Authorization': config.dx29WebApiAuth },
+    body: req.body
+  }).then((response) => {
+    if (response.body == 'Missing authentication token.') {
+      res.status(401).send(response.body)
+    } else {
+      res.status(response.statusCode).send(response.body)
     }
-    if(body=='Missing authentication token.'){
-      res.status(401).send(body)
-    }else{
-      res.status(200).send(body)
-    }
-
-  });
+  }).catch((error) => {
+    console.error(error)
+    res.status(500).send(error.message || error)
+  })
 }
 
 module.exports = {

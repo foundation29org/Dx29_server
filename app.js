@@ -5,7 +5,6 @@
 
 const express = require('express')
 const compression = require('compression');
-const bodyParser = require('body-parser');
 const app = express()
 // habilitar compresión 
 app.use(compression());
@@ -23,8 +22,8 @@ function setCrossDomain(req, res, next) {
   next();
 }
 
-app.use(bodyParser.urlencoded({limit: '50mb', extended: false}))
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(express.urlencoded({limit: '50mb', extended: false}))
+app.use(express.json({limit: '50mb'}))
 app.use(setCrossDomain);
 
 // use the forward slash with the module api api folder created routes

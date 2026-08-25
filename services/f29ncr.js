@@ -1,24 +1,26 @@
 'use strict'
 
 const config = require('../config')
-const request = require('request')
+const { jsonRequest } = require('./httpClient')
 
 function getAnnotate_batch (req, res){
-
   var segments = req.body;
   var ncrBearer = 'Bearer '+ config.ncrBearer;
-  request.post({url:config.f29ncr+'/api/annotate_batch',json: true,headers: {'authorization': ncrBearer},body:segments}, (error, response, body) => {
-    if (error) {
-      console.error(error)
-      res.status(500).send(error)
+  jsonRequest({
+    method: 'POST',
+    url: config.f29ncr + '/api/annotate_batch',
+    headers: { 'authorization': ncrBearer },
+    body: segments
+  }).then((response) => {
+    if (response.body == 'Missing authentication token.') {
+      res.status(401).send(response.body)
+    } else {
+      res.status(response.statusCode).send(response.body)
     }
-    if(body=='Missing authentication token.'){
-      res.status(401).send(body)
-    }else{
-      res.status(200).send(body)
-    }
-
-  });
+  }).catch((error) => {
+    console.error(error)
+    res.status(500).send(error.message || error)
+  })
 }
 
 module.exports = {
