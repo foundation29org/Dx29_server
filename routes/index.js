@@ -15,6 +15,7 @@ const sendEmailCtrl = require('../services/sendEmails')
 const blobOpenDx29Ctrl = require('../services/blobOpenDx29')
 const wikiCtrl = require('../services/wikipedia')
 const supportCtrl = require('../controllers/all/support')
+const clinicalTrialsCtrl = require('../services/clinicaltrials')
 
 const api = express.Router()
 
@@ -62,5 +63,7 @@ api.post('/wiki', wikiCtrl.callwiki)
 
 //patientGroups
 api.get('/patientgroups/:idDisease', f29patientgroupsCtrl.getPatientGroups)
+
+api.get('/clinicaltrials', clinicalTrialsCtrl.searchClinicalTrials)
 
 module.exports = api
